@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Components.css';
 
-function AlternativeCreditReporting() {
+function AlternativeCreditReporting({ onClose }) {
   const [identityVerified, setIdentityVerified] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
@@ -45,6 +45,7 @@ function AlternativeCreditReporting() {
 
   return (
     <div className="alternative-credit-reporting-container">
+      <button onClick={onClose} className="close-button">x</button>
       <h2>alternative credit reporting</h2>
 
       {!identityVerified ? (

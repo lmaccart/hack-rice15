@@ -1,11 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 body {
   margin: 0;
-  font-family: 'Press Start 2P', cursive; /* Pixelated font */
+  font-family: 'press start 2p', cursive; /* pixelated font */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #282c34;
   color: #fff;
-  overflow: hidden; /* Prevent scrolling due to game canvas */
+  overflow: hidden; /* prevent scrolling due to game canvas */
   text-transform: lowercase;
 }
 

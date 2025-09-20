@@ -3,31 +3,38 @@ import './Onboarding.css';
 
 function Onboarding({ onOnboardingComplete }) {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(''); // new state for password
   const [name, setName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState('');
+  const [isLogin, setIsLogin] = useState(false); // new state to toggle between login and register
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const url = isLogin ? 'http://localhost:5001/api/login' : 'http://localhost:5001/api/register';
+    const body = isLogin ? { email, password } : { email, password, name, monthlyIncome: parseInt(monthlyIncome) };
+
     try {
-      const response = await fetch('http://localhost:5001/api/register', {
-        method: 'POST',
+      const response = await fetch(url, {
+        method: 'post',
         headers: {
-          'Content-Type': 'application/json',
+          'content-type': 'application/json',
         },
-        body: JSON.stringify({ email, name, monthlyIncome: parseInt(monthlyIncome) }),
+        body: JSON.stringify(body),
       });
 
       if (response.ok) {
-        console.log('user registered successfully!');
+        const data = await response.json();
+        console.log(isLogin ? 'user logged in successfully!' : 'user registered successfully!', data.uid);
+        localStorage.setItem('user_uid', data.uid);
         onOnboardingComplete();
       } else {
         const errorData = await response.json();
-        console.error('registration failed:', errorData.error);
-        alert(`registration failed: ${errorData.error}`);
+        console.error(isLogin ? 'login failed:' : 'registration failed:', errorData.error);
+        alert(`${isLogin ? 'login failed:' : 'registration failed:'} ${errorData.error}`);
       }
     } catch (error) {
-      console.error('error during registration:', error);
-      alert('an error occurred during registration.');
+      console.error(isLogin ? 'error during login:' : 'error during registration:', error);
+      alert(`an error occurred during ${isLogin ? 'login' : 'registration'}.`);
     }
   };
 
@@ -45,25 +52,45 @@ function Onboarding({ onOnboardingComplete }) {
           />
         </label>
         <label>
-          name:
+          password:
           <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </label>
-        <label>
-          monthly income:
-          <input
-            type="number"
-            value={monthlyIncome}
-            onChange={(e) => setMonthlyIncome(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">start game</button>
+
+        {!isLogin && (
+          <>
+            <label>
+              name:
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              monthly income:
+              <input
+                type="number"
+                value={monthlyIncome}
+                onChange={(e) => setMonthlyIncome(e.target.value)}
+                required
+              />
+            </label>
+          </>
+        )}
+        <button type="submit">{isLogin ? 'login' : 'start game'}</button>
       </form>
+      <p>
+        {isLogin ? 'new player? ' : 'already have an account? '}
+        <span onClick={() => setIsLogin(!isLogin)} className="toggle-link">
+          {isLogin ? 'register' : 'login'}
+        </span>
+      </p>
     </div>
   );
 }

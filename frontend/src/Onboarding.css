@@ -25,3 +25,13 @@
 .onboarding-container button {
   margin-top: 20px;
 }
+
+.toggle-link {
+  color: #aaffaa;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.toggle-link:hover {
+  color: #ccffcc;
+}

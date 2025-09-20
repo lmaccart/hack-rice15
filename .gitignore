@@ -23,6 +23,7 @@ yarn-error.log*
 # local .env files
 /backend/.env
 /backend/google-credentials.json
+/backend/firebase-adminsdk.json
 
 # build output
 /frontend/build

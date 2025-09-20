@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Components.css';
 
-function CreditScoreCalculator() {
+function CreditScoreCalculator({ onClose }) {
   const [creditUsage, setCreditUsage] = useState('');
   const [paymentHistory, setPaymentHistory] = useState('');
   const [creditAge, setCreditAge] = useState('');
@@ -42,6 +42,7 @@ function CreditScoreCalculator() {
 
   return (
     <div className="credit-score-calculator-container">
+      <button onClick={onClose} className="close-button">x</button>
       <h2>credit score calculator</h2>
       <form onSubmit={calculateCreditScore}>
         <label>

@@ -1,17 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Components.css';
 
-function BudgetingTool() {
+function BudgetingTool({ onClose }) {
   const [expenses, setExpenses] = useState([]);
   const [newExpenseName, setNewExpenseName] = useState('');
   const [newExpenseAmount, setNewExpenseAmount] = useState('');
+  const userId = localStorage.getItem('user_uid');
 
-  const handleAddExpense = (event) => {
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      if (!userId) return;
+      try {
+        const response = await fetch(`http://localhost:5001/api/budget/${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setExpenses(data);
+        } else {
+          console.error('failed to fetch expenses:', response.statusText);
+        }
+      } catch (error) {
+        console.error('error fetching expenses:', error);
+      }
+    };
+    fetchExpenses();
+  }, [userId]);
+
+  const handleAddExpense = async (event) => {
     event.preventDefault();
-    if (newExpenseName && newExpenseAmount) {
-      setExpenses([...expenses, { name: newExpenseName, amount: parseFloat(newExpenseAmount) }]);
-      setNewExpenseName('');
-      setNewExpenseAmount('');
+    if (newExpenseName && newExpenseAmount && userId) {
+      try {
+        const response = await fetch('http://localhost:5001/api/budget', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ userId, name: newExpenseName, amount: parseFloat(newExpenseAmount) }),
+        });
+
+        if (response.ok) {
+          console.log('budget entry added successfully!');
+          setExpenses([...expenses, { name: newExpenseName, amount: parseFloat(newExpenseAmount) }]);
+          setNewExpenseName('');
+          setNewExpenseAmount('');
+          // refetch expenses to get timestamp and id
+          const updatedResponse = await fetch(`http://localhost:5001/api/budget/${userId}`);
+          if (updatedResponse.ok) {
+            const updatedData = await updatedResponse.json();
+            setExpenses(updatedData);
+          }
+        } else {
+          const errorData = await response.json();
+          console.error('failed to add budget entry:', errorData.error);
+        }
+      } catch (error) {
+        console.error('error adding budget entry:', error);
+      }
     }
   };
 
@@ -19,6 +62,7 @@ function BudgetingTool() {
 
   return (
     <div className="budgeting-tool-container">
+      <button onClick={onClose} className="close-button">x</button>
       <h2>budgeting tool</h2>
       <form onSubmit={handleAddExpense}>
         <label>
@@ -45,7 +89,7 @@ function BudgetingTool() {
       <h3>your expenses:</h3>
       <ul>
         {expenses.map((expense, index) => (
-          <li key={index}>{expense.name}: ${expense.amount.toFixed(2)}</li>
+          <li key={expense.id || index}>{expense.name}: ${expense.amount.toFixed(2)}</li>
         ))}
       </ul>
 
