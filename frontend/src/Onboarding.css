@@ -1,0 +1,27 @@
+.onboarding-container {
+  background-color: #3a3a3a;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 5px 5px #000;
+  border: 2px solid #aaffaa;
+  max-width: 500px;
+  margin: 20px;
+}
+
+.onboarding-container h1 {
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+
+.onboarding-container form label {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.onboarding-container form input {
+  width: calc(100% - 20px);
+}
+
+.onboarding-container button {
+  margin-top: 20px;
+}

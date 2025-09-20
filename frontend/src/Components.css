@@ -1,0 +1,99 @@
+.budgeting-tool-container,
+.credit-university-container,
+.credit-score-calculator-container,
+.alternative-credit-reporting-container {
+  background-color: #3a3a3a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 3px 3px #000;
+  border: 1px solid #aaffaa;
+  margin: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  max-width: 600px;
+  width: 90%;
+}
+
+.budgeting-tool-container h2,
+.credit-university-container h2,
+.credit-score-calculator-container h2,
+.alternative-credit-reporting-container h2 {
+  margin-bottom: 15px;
+}
+
+.budgeting-tool-container form label,
+.credit-score-calculator-container form label,
+.alternative-credit-reporting-container div label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.budgeting-tool-container form input,
+.credit-score-calculator-container form input,
+.alternative-credit-reporting-container input[type="file"] {
+  width: calc(100% - 20px);
+  margin-bottom: 10px;
+}
+
+.budgeting-tool-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.budgeting-tool-container li {
+  background-color: #444;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.module-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.module-list li {
+  background-color: #444;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.module-list li:hover {
+  background-color: #555;
+}
+
+.module-content {
+  margin-top: 20px;
+  background-color: #444;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.module-content button {
+  margin-top: 15px;
+}
+
+.credit-score-result h3,
+.credit-score-result h4 {
+  margin-top: 15px;
+}
+
+.credit-score-result p {
+  background-color: #444;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.alternative-credit-reporting-container button {
+  margin-top: 10px;
+}

@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', cursive; /* Pixelated font */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #282c34;
+  color: #fff;
+  overflow: hidden; /* Prevent scrolling due to game canvas */
+  text-transform: lowercase;
+}
+
+.App {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #aaffaa; /* Game-like green */
+  text-shadow: 2px 2px #000;
+  text-transform: lowercase;
+}
+
+button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-family: 'Press Start 2P', cursive;
+  box-shadow: 3px 3px #000;
+  text-transform: lowercase;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea {
+  padding: 10px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: 'Press Start 2P', cursive;
+  background-color: #333;
+  color: #fff;
+  text-transform: lowercase;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+  text-transform: lowercase;
+}
