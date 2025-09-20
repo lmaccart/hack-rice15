@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "hack-rice15-mobile",
+    "slug": "hack-rice15-mobile",
+    "version": "1.0.0",
+    "platforms": ["ios", "android", "web"],
+    "sdkVersion": "48.0.0"
+  }
+}
