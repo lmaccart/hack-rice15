@@ -85,6 +85,7 @@ button:hover {
 input[type="text"],
 input[type="email"],
 input[type="number"],
+input[type="password"],
 textarea {
   padding: 10px;
   margin: 8px 0;
@@ -92,10 +93,10 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'press start 2p', cursive;
   background-color: #333;
   color: #fff;
-  text-transform: lowercase;
+  width: calc(100% - 20px); /* consistent width for all inputs */
 }
 
 label {

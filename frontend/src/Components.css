@@ -120,3 +120,8 @@
 .close-button:hover {
   background-color: #cc0000;
 }
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}

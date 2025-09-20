@@ -18,10 +18,6 @@
   margin-bottom: 15px;
 }
 
-.onboarding-container form input {
-  width: calc(100% - 20px);
-}
-
 .onboarding-container button {
   margin-top: 20px;
 }
