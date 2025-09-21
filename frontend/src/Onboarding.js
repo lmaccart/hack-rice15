@@ -40,7 +40,7 @@ function Onboarding({ onOnboardingComplete }) {
 
   return (
     <div className="onboarding-container">
-      <h1>welcome to Finlit!</h1>
+      <h1>welcome to creditro!</h1>
       <form onSubmit={handleSubmit}>
         <label>
           email:
@@ -72,7 +72,7 @@ function Onboarding({ onOnboardingComplete }) {
                 required
               />
             </label>
-            <label>
+            {/* <label>
               monthly income:
               <input
                 type="number"
@@ -80,7 +80,7 @@ function Onboarding({ onOnboardingComplete }) {
                 onChange={(e) => setMonthlyIncome(e.target.value)}
                 required
               />
-            </label>
+            </label> */}
           </>
         )}
         <button type="submit">{isLogin ? 'login' : 'start game'}</button>

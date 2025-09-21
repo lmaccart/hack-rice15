@@ -1,0 +1,149 @@
+/* General styling for the page and pixel aesthetic */
+body {
+    background-color: #333;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+/* Disables anti-aliasing for a crisp pixel look */
+img {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* The main container for the chatbot UI */
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* The wizard icon which also acts as the toggle button */
+#wizard-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    width: 80px; /* Minimized size */
+    height: 80px;
+    transform-origin: bottom right;
+}
+
+#wizard-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Chat window styles */
+#chat-window {
+    width: 350px;
+    height: 450px;
+    margin-bottom: 10px;
+    display: none; /* Initially hidden */
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#message-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0;
+    /* Custom scrollbar for pixel aesthetic */
+    scrollbar-width: thin;
+    scrollbar-color: #9452ff #2c1e3a;
+}
+
+#message-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#message-container::-webkit-scrollbar-track {
+    background: #2c1e3a;
+}
+
+#message-container::-webkit-scrollbar-thumb {
+    background-color: #9452ff;
+    border: 2px solid #2c1e3a;
+}
+
+/* Individual chat bubble styling */
+.chat-bubble {
+    padding: 15px;
+    border-radius: 5px;
+    max-width: 80%;
+    position: relative;
+    line-height: 1.5;
+    word-wrap: break-word;
+    border: 3px solid #1a1a1a;
+    box-shadow: 5px 5px 0px #1a1a1a;
+}
+
+/* Adds the little triangle/tail to the chat bubble */
+.chat-bubble::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.user-message {
+    background-color: #4a90e2;
+    align-self: flex-end;
+    margin-right: 15px;
+}
+
+.user-message::after {
+    bottom: -3px;
+    right: -13px;
+    border-width: 15px 0 0 15px;
+    border-color: transparent transparent transparent #4a90e2;
+    filter: drop-shadow(4px 2px 0 #1a1a1a);
+}
+
+.bot-message {
+    background-color: #7e42f5;
+    align-self: flex-start;
+}
+
+.bot-message::after {
+    bottom: -3px;
+    left: -13px;
+    border-width: 0 0 15px 15px;
+    border-color: transparent transparent #7e42f5 transparent;
+    filter: drop-shadow(-4px 2px 0 #1a1a1a);
+}
+
+#chat-input {
+    width: 100%;
+    padding: 10px;
+    border: 3px solid #1a1a1a;
+    background-color: #2c1e3a;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    margin-top: 10px;
+}
+
+#chat-input:focus {
+     border-color: #9452ff;
+}
+
+/* --- TOGGLE STATES --- */
+/* Styles when chat is open */
+#chatbot-container.chat-mode #chat-window {
+    display: flex;
+}
+
+#chatbot-container.chat-mode #wizard-icon {
+    width: 120px; /* Larger icon in chat mode */
+    height: 120px;
+}
