@@ -1,19 +1,27 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-// This would typically be in your public/index.html file's <head>
+// Styles for the town hall overlay
 const GlobalStyles = () => (
 <style>{`
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-body {
+.town-hall-overlay {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+z-index: 1000;
+padding: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
 font-family: 'Press Start 2P', cursive;
-background-color: #DFD3C3;
-/* A subtle pixelated background pattern */
-background-image:
-linear-gradient(45deg, #C7B9A9 25%, transparent 25%),
-linear-gradient(-45deg, #C7B9A9 25%, transparent 25%),
-linear-gradient(45deg, transparent 75%, #C7B9A9 75%),
-linear-gradient(-45deg, transparent 75%, #C7B9A9 75%);
-background-size: 4px 4px;
+scrollbar-width: none;
+-ms-overflow-style: none;
+}
+.town-hall-overlay::-webkit-scrollbar {
+display: none;
+}
 /* Antialiasing off for crisp fonts */
 -webkit-font-smoothing: none;
 -moz-osx-font-smoothing: grayscale;
@@ -408,31 +416,38 @@ const handleBack = () => setStep(1);
 return (
 <>
 <GlobalStyles />
-<div className="flex items-center justify-center min-h-screen p-4 text-xs">
-<div className="w-full max-w-lg mx-auto">
-<Header />
-<main className="relative h-[450px]">
-<div className={`step-card ${step !== 1 ? 'hidden-step' : ''}`}>
-<Step1Details onFormSubmit={handleFormSubmit} />
-</div>
-<div className={`step-card ${step !== 2 ? 'hidden-step' : ''}`}>
-<Step2Upload
-onVerify={handleVerify}
-onBack={handleBack}
-uploadedFile={uploadedFile}
-setUploadedFile={setUploadedFile}
-/>
-</div>
-<div className={`step-card ${step !== 3 ? 'hidden-step' : ''}`}>
-<ResultView
-status={verificationStatus}
-userData={userData}
-ocrText={ocrText}
-onReset={handleReset}
-/>
-</div>
-</main>
-</div>
+<div className="town-hall-overlay">
+  <div className="relative w-full max-w-lg mx-auto bg-white/90 backdrop-blur-sm p-6 rounded-lg pixel-border">
+    <button 
+      onClick={onClose}
+      className="absolute top-4 left-4 text-gray-600 hover:text-gray-800 pixel-button bg-red-500"
+      style={{ padding: '8px 12px', fontSize: '0.7rem' }}
+    >
+      X
+    </button>
+    <Header />
+    <main className="relative h-[450px]">
+      <div className={`step-card ${step !== 1 ? 'hidden-step' : ''}`}>
+        <Step1Details onFormSubmit={handleFormSubmit} />
+      </div>
+      <div className={`step-card ${step !== 2 ? 'hidden-step' : ''}`}>
+        <Step2Upload
+          onVerify={handleVerify}
+          onBack={handleBack}
+          uploadedFile={uploadedFile}
+          setUploadedFile={setUploadedFile}
+        />
+      </div>
+      <div className={`step-card ${step !== 3 ? 'hidden-step' : ''}`}>
+        <ResultView
+          status={verificationStatus}
+          userData={userData}
+          ocrText={ocrText}
+          onReset={handleReset}
+        />
+      </div>
+    </main>
+  </div>
 </div>
 </>
 );
