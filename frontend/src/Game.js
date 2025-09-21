@@ -53,154 +53,55 @@ class MyScene extends Phaser.Scene {
     this.hasExitedShopHotspot = true; // New property for cooldown
     this.hasExitedBistroHotspot = true; // New property for cooldown
     this.hasExitedPoliceStationHotspot = true; // New property for cooldown
+
+    this.numCols = Math.floor(this.sys.game.config.width / tileSize);
+    this.numRows = Math.floor(this.sys.game.config.height / tileSize);
   }
 
-  init(data) {
-    // Retrieve React state setters from the data passed during scene creation
-    this.setShowBudgetingTool = data.setShowBudgetingTool;
-    this.setIsPlayerInBudgetingHotspot = data.setIsPlayerInBudgetingHotspot;
-    this.setShowCreditUniversity = data.setShowCreditUniversity;
-    this.setIsPlayerInCreditUniversityHotspot = data.setIsPlayerInCreditUniversityHotspot;
-    this.setShowCreditScoreCalculator = data.setShowCreditScoreCalculator;
-    this.setIsPlayerInCreditScoreCalculatorHotspot = data.setIsPlayerInCreditScoreCalculatorHotspot;
-    this.setShowAlternativeCreditReporting = data.setShowAlternativeCreditReporting;
-    this.setIsPlayerInAlternativeCreditReportingHotspot = data.setIsPlayerInAlternativeCreditReportingHotspot;
-    this.setShowCentralCreditUniversity = data.setShowCentralCreditUniversity;
-    this.setIsPlayerInCentralCreditUniversityHotspot = data.setIsPlayerInCentralCreditUniversityHotspot;
-    this.setShowTownHall = data.setShowTownHall;
-    this.setIsPlayerInTownHallHotspot = data.setIsPlayerInTownHallHotspot;
-    this.setShowShop = data.setShowShop;
-    this.setIsPlayerInShopHotspot = data.setIsPlayerInShopHotspot;
-    this.setShowBistro = data.setShowBistro;
-    this.setIsPlayerInBistroHotspot = data.setIsPlayerInBistroHotspot;
-    this.setShowPoliceStation = data.setShowPoliceStation;
-    this.setIsPlayerInPoliceStationHotspot = data.setIsPlayerInPoliceStationHotspot;
-    this.showBudgetingTool = data.showBudgetingTool; // Set the property from passed data
-    this.showCreditUniversity = data.showCreditUniversity; // Set the property
-    this.showCreditScoreCalculator = data.showCreditScoreCalculator; // Set the property
-    this.showAlternativeCreditReporting = data.showAlternativeCreditReporting; // Set the property
-    this.showCentralCreditUniversity = data.showCentralCreditUniversity; // Set the property for central Credit University
-    this.showTownHall = data.showTownHall; // Set the property
-    this.showShop = data.showShop; // Set the property
-    this.showBistro = data.showBistro; // Set the property
-    this.showPoliceStation = data.showPoliceStation; // Set the property
-    this.hasExitedBudgetingHotspot = data.hasExitedBudgetingHotspot; // Set the property for cooldown
-    this.hasExitedCreditUniversityHotspot = data.hasExitedCreditUniversityHotspot; // Set the property for cooldown
-    this.hasExitedCreditScoreCalculatorHotspot = data.hasExitedCreditScoreCalculatorHotspot; // Set the property for cooldown
-    this.hasExitedAlternativeCreditReportingHotspot = data.hasExitedAlternativeCreditReportingHotspot; // Set the property for cooldown
-    this.hasExitedCentralCreditUniversityHotspot = data.hasExitedCentralCreditUniversityHotspot; // Set the property for cooldown
-    this.hasExitedTownHallHotspot = data.hasExitedTownHallHotspot; // Set the property for cooldown
-    this.hasExitedShopHotspot = data.hasExitedShopHotspot; // Set the property for cooldown
-    this.hasExitedBistroHotspot = data.hasExitedBistroHotspot; // Set the property for cooldown
-    this.hasExitedPoliceStationHotspot = data.hasExitedPoliceStationHotspot; // Set the property for cooldown
-  }
-
-  preload() {
-    this.load.image('grass', 'img/bkgdArt/Grass.png');
-    this.load.image('fence', 'img/bkgdArt/Fence.png');
-    this.load.image('path', 'img/bkgdArt/Path.png');
-    this.load.image('tree', 'img/bkgdArt/Tree.png');
-    this.load.image('autumnal_tree', 'img/bkgdArt/Autumnal_Tree_2.png');
-    this.load.image('fence_vertical', 'img/bkgdArt/fence vertical.png');
-    this.load.image('bank_front', 'img/storefronts/bank_front.png');
-    this.load.image('creditu_front', 'img/storefronts/creditu.png');
-    this.load.image('townhall_front', 'img/bkgdArt/townhsll.png');
-    this.load.image('shop_front', 'img/bkgdArt/shop.png');
-    this.load.image('bistro_front', 'img/bkgdArt/bistro.png');
-
-    // Load character walk animations
-    const directions = ['east', 'north', 'north-east', 'north-west', 'south', 'south-east', 'south-west', 'west'];
-    directions.forEach(direction => {
-      for (let i = 0; i < 6; i++) {
-        this.load.image(`walk_${direction}_${i}`, `img/characterSprites/animations/walk/${direction}/frame_00${i}.png`);
-      }
-    });
-  }
-
-  create() {
-    const numCols = Math.floor(this.sys.game.config.width / tileSize);
-    const numRows = Math.floor(this.sys.game.config.height / tileSize);
-
-    // Keep track of occupied tiles
-    this.occupiedTiles = new Set();
-
-    // Declare allPathTiles here
-    const allPathTiles = [];
-
-    // Mark fence tiles as occupied
-    for (let x = 0; x < numCols; x++) {
-      this.occupiedTiles.add(`${x},0`);
-      this.occupiedTiles.add(`${x},${numRows - 1}`);
-    }
-    for (let y = 1; y < numRows - 1; y++) {
-      this.occupiedTiles.add(`0,${y}`);
-      this.occupiedTiles.add(`${numCols - 1},${y}`);
-    }
-
-    // Define hotspot regions
-    this.hotspots = [
-      { x: 5 * tileSize + tileSize / 2, y: 5 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'credituniversity' }, // Top-left Credit University
-      { x: (numCols - 5) * tileSize + tileSize / 2, y: 5 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'bank' }, // Top-right Bank
-      { x: 9 * tileSize + tileSize / 2, y: 9 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'townhall' }, // Center-left Town Hall
-      { x: (numCols - 9) * tileSize + tileSize / 2, y: 9 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'shop' }, // Center-right Shop
-      { x: (numCols - 5) * tileSize + tileSize / 2, y: 9 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'bistro' }, // Center-right Bistro
-      { x: numCols / 2 * tileSize + tileSize / 2, y: (numRows - 5) * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'policestation' }, // Bottom-center Police Station
-    ];
-
+  _createMap() {
     // Draw grass background (across entire grid first)
-    for (let y = 0; y < numRows; y++) {
-      for (let x = 0; x < numCols; x++) {
+    for (let y = 0; y < this.numRows; y++) {
+      for (let x = 0; x < this.numCols; x++) {
         this.add.image(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'grass').setDisplaySize(tileSize, tileSize);
       }
     }
 
     // Draw fence borders
     this.fences = this.physics.add.staticGroup();
-    for (let x = 0; x < numCols; x++) {
+    for (let x = 0; x < this.numCols; x++) {
       this.fences.create(x * tileSize + tileSize / 2, tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
-      this.fences.create(x * tileSize + tileSize / 2, (numRows - 1) * tileSize + tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
+      this.fences.create(x * tileSize + tileSize / 2, (this.numRows - 1) * tileSize + tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
     }
-    for (let y = 1; y < numRows - 1; y++) {
+    for (let y = 1; y < this.numRows - 1; y++) {
       this.fences.create(tileSize / 2, y * tileSize + tileSize / 2, 'fence_vertical').setDisplaySize(tileSize, tileSize);
-      this.fences.create((numCols - 1) * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'fence_vertical').setDisplaySize(tileSize, tileSize);
+      this.fences.create((this.numCols - 1) * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'fence_vertical').setDisplaySize(tileSize, tileSize);
     }
 
     // Mark fence tiles as occupied (after drawing them)
-    for (let x = 0; x < numCols; x++) {
+    for (let x = 0; x < this.numCols; x++) {
       this.occupiedTiles.add(`${x},0`);
-      this.occupiedTiles.add(`${x},${numRows - 1}`);
+      this.occupiedTiles.add(`${x},${this.numRows - 1}`);
     }
-    for (let y = 1; y < numRows - 1; y++) {
+    for (let y = 1; y < this.numRows - 1; y++) {
       this.occupiedTiles.add(`0,${y}`);
-      this.occupiedTiles.add(`${numCols - 1},${y}`);
+      this.occupiedTiles.add(`${this.numCols - 1},${y}`);
     }
+  }
 
-    // Example paths (adjust as needed)
-    const config = this.sys.game.config; // Re-declare config here for use in drawPath calls
+  _defineHotspots() {
+    // Define hotspot regions
+    this.hotspots = [
+      { x: 5 * tileSize + tileSize / 2, y: 4 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'credituniversity' }, // Top-left Credit University
+      { x: (this.numCols - 5) * tileSize + tileSize / 2, y: 4 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'bank' }, // Top-right Bank (shrunk)
+      { x: 9 * tileSize + tileSize / 2, y: 8 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'townhall' }, // Center-left Town Hall
+      { x: (this.numCols - 9) * tileSize + tileSize / 2, y: 8 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'shop' }, // Center-right Shop
+      { x: (this.numCols - 5) * tileSize + tileSize / 2, y: 8 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'bistro' }, // Center-right Bistro
+      { x: this.numCols / 2 * tileSize + tileSize / 2, y: (this.numRows - 6) * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'policestation' }, // Bottom-center Police Station
+    ];
+  }
 
-    // Paths based on the provided image
-    const centerX = numCols / 2 * tileSize + tileSize / 2;
-    const centerY = numRows / 2 * tileSize + tileSize / 2;
-
-    // Central vertical path
-    allPathTiles.push(...this.drawPath(centerX, 0, centerX, numRows * tileSize, config));
-    // Central horizontal path (connecting Town Hall, Shop, Bistro)
-    allPathTiles.push(...this.drawPath(0, 9 * tileSize + tileSize / 2, numCols * tileSize, 9 * tileSize + tileSize / 2, config));
-
-    // Path to Credit University (hotspots[0])
-    allPathTiles.push(...this.drawPath(centerX, 5 * tileSize + tileSize / 2, this.hotspots[0].x, this.hotspots[0].y, config));
-    // Path to Bank (hotspots[1])
-    allPathTiles.push(...this.drawPath(centerX, 5 * tileSize + tileSize / 2, this.hotspots[1].x, this.hotspots[1].y, config));
-    // Path to Town Hall (hotspots[2])
-    allPathTiles.push(...this.drawPath(centerX, 9 * tileSize + tileSize / 2, this.hotspots[2].x, this.hotspots[2].y, config));
-    // Path from Town Hall to Shop (hotspots[3])
-    allPathTiles.push(...this.drawPath(this.hotspots[2].x, this.hotspots[2].y, this.hotspots[3].x, this.hotspots[3].y, config));
-    // Path from Shop to Bistro (hotspots[4])
-    allPathTiles.push(...this.drawPath(this.hotspots[3].x, this.hotspots[3].y, this.hotspots[4].x, this.hotspots[4].y, config));
-    // Path to Police Station (hotspots[5])
-    allPathTiles.push(...this.drawPath(centerX, (numRows - 5) * tileSize + tileSize / 2, this.hotspots[5].x, this.hotspots[5].y, config));
-
-    // Mark building tiles as occupied (moved here to allow paths underneath)
+  _markBuildingTilesOccupied() {
+    // Mark building tiles as occupied
     this.hotspots.forEach(hotspot => {
       const startCol = Math.floor((hotspot.x - hotspot.width / 2) / tileSize);
       const endCol = Math.floor((hotspot.x + hotspot.width / 2) / tileSize);
@@ -213,23 +114,57 @@ class MyScene extends Phaser.Scene {
         }
       }
     });
+  }
 
+  _drawPaths() {
+    // Define central paths
+    const centralVerticalPathX = Math.floor(this.numCols / 2);
+    const centralHorizontalPathY = Math.floor(this.numRows / 2) - 1; // Adjusted for the overall shift of the map
+
+    // Draw central vertical path
+    this.drawPath(centralVerticalPathX * tileSize + tileSize / 2, tileSize + tileSize / 2, centralVerticalPathX * tileSize + tileSize / 2, (this.numRows - 2) * tileSize + tileSize / 2, {});
+
+    // Draw central horizontal path
+    this.drawPath(tileSize + tileSize / 2, centralHorizontalPathY * tileSize + tileSize / 2, (this.numCols - 2) * tileSize + tileSize / 2, centralHorizontalPathY * tileSize + tileSize / 2, {});
+
+    // Paths to buildings
+    // Credit University (top-left)
+    this.drawPath(centralVerticalPathX * tileSize + tileSize / 2, 4 * tileSize + tileSize / 2, 5 * tileSize + tileSize / 2, 4 * tileSize + tileSize / 2, {});
+
+    // Bank (top-right)
+    this.drawPath(centralVerticalPathX * tileSize + tileSize / 2, 4 * tileSize + tileSize / 2, (this.numCols - 5) * tileSize + tileSize / 2, 4 * tileSize + tileSize / 2, {});
+
+    // Town Hall (center-left)
+    this.drawPath(centralVerticalPathX * tileSize + tileSize / 2, 8 * tileSize + tileSize / 2, 9 * tileSize + tileSize / 2, 8 * tileSize + tileSize / 2, {});
+
+    // Shop (center-right, from central horizontal path)
+    this.drawPath(centralVerticalPathX * tileSize + tileSize / 2, 8 * tileSize + tileSize / 2, (this.numCols - 9) * tileSize + tileSize / 2, 8 * tileSize + tileSize / 2, {});
+
+    // Bistro (next to shop)
+    this.drawPath((this.numCols - 9) * tileSize + tileSize / 2, 8 * tileSize + tileSize / 2, (this.numCols - 5) * tileSize + tileSize / 2, 8 * tileSize + tileSize / 2, {});
+
+    // Police Station (bottom-center)
+    this.drawPath(centralVerticalPathX * tileSize + tileSize / 2, (this.numRows - 6) * tileSize + tileSize / 2, centralVerticalPathX * tileSize + tileSize / 2, (this.numRows - 6) * tileSize + tileSize / 2, {});
+  }
+
+  _drawBuildings() {
     // Draw buildings/hotspots
     this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'creditu_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height); // Credit University
     this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'bank_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height); // Bank
     this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'townhall_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height); // Town Hall
     this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'shop_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height); // Shop
     this.add.image(this.hotspots[4].x, this.hotspots[4].y, 'bistro_front').setDisplaySize(this.hotspots[4].width, this.hotspots[4].height); // Bistro
-    this.add.image(this.hotspots[5].x, this.hotspots[5].y, 'bank_front').setDisplaySize(this.hotspots[5].width, this.hotspots[5].height); // Police Station (using bank_front as placeholder)
+    this.add.image(this.hotspots[5].x, this.hotspots[5].y, 'police_station_front').setDisplaySize(this.hotspots[5].width, this.hotspots[5].height); // Police Station
+  }
 
-    // Scatter random trees
+  _createTrees() {
     const numTrees = 100; // adjust as needed (increased from 50)
     for (let i = 0; i < numTrees; i++) {
       let treeX, treeY, treeCol, treeRow;
       let placed = false;
       while (!placed) {
-        treeCol = Phaser.Math.Between(1, numCols - 2); // avoid borders
-        treeRow = Phaser.Math.Between(1, numRows - 2); // avoid borders
+        treeCol = Phaser.Math.Between(1, this.numCols - 2); // avoid borders
+        treeRow = Phaser.Math.Between(1, this.numRows - 2); // avoid borders
         if (!this.occupiedTiles.has(`${treeCol},${treeRow}`)) {
           treeX = treeCol * tileSize + tileSize / 2;
           treeY = treeRow * tileSize + tileSize / 2;
@@ -240,11 +175,13 @@ class MyScene extends Phaser.Scene {
         }
       }
     }
+  }
 
+  _createPlayer() {
     // Calculate a safe spawn position
     // Spawn player near the center of the map
-    let safeSpawnX = numCols / 2 * tileSize + tileSize / 2;
-    let safeSpawnY = (numRows / 2 + 2) * tileSize + tileSize / 2; // Slightly below the central horizontal path
+    let safeSpawnX = this.numCols / 2 * tileSize + tileSize / 2;
+    let safeSpawnY = (this.numRows / 2 + 1) * tileSize + tileSize / 2; // Adjusted for the overall shift of the map
 
     this.player = this.physics.add.sprite(safeSpawnX, safeSpawnY, 'walk_south_0');
     this.player.setCollideWorldBounds(true);
@@ -260,41 +197,12 @@ class MyScene extends Phaser.Scene {
       left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
       right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
+  }
 
-    // Create animations
-    const directions = ['east', 'north', 'north-east', 'north-west', 'south', 'south-east', 'south-west', 'west'];
-    directions.forEach(direction => {
-      this.anims.create({
-        key: `walk_${direction}`,
-        frames: Array.from({ length: 6 }, (_, i) => ({ key: `walk_${direction}_${i}` })),
-        frameRate: 10,
-        repeat: -1
-      });
-    });
-
-    // Placeholder for interacting with budgeting tool
-    const budgetingHotspot = this.add.rectangle(this.hotspots[0].x, this.hotspots[0].y, this.hotspots[0].width, this.hotspots[0].height, 0xff0000, 0).setOrigin(0.5);
-    this.physics.world.enable(budgetingHotspot);
-    this.physics.add.overlap(this.player, budgetingHotspot, () => {
-      if (!this.isPlayerInBudgetingHotspot && this.hasExitedBudgetingHotspot && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity) {
-        this.setShowBudgetingTool(true);
-        this.setIsPlayerInBudgetingHotspot(true);
-        this.setHasExitedBudgetingHotspot(false);
-      }
-    });
-    this.physics.add.overlap(this.player, budgetingHotspot, () => {},
-      (player, hotspot) => {},
-      this
-    );
-    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
-      if (gameObject1 === this.player && gameObject2 === budgetingHotspot) {
-        this.setHasExitedBudgetingHotspot(true);
-      }
-    });
-
-    // Hotspot for Credit University (now hotspots[0])
-    const creditUniversityHotspot = this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'creditu_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height).setOrigin(0.5);
-    this.physics.world.enable(creditUniversityHotspot);
+  _setupHotspotPhysics() {
+    // Hotspot for Credit University (hotspots[0])
+    const creditUniversityHotspot = this.physics.add.sprite(this.hotspots[0].x, this.hotspots[0].y, null).setDisplaySize(this.hotspots[0].width, this.hotspots[0].height);
+    creditUniversityHotspot.setVisible(false);
     this.physics.add.overlap(this.player, creditUniversityHotspot, () => {
       if (!this.isPlayerInCreditUniversityHotspot && this.hasExitedCreditUniversityHotspot && !this.showBudgetingTool && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showBistro && !this.showPoliceStation) {
         this.setShowCreditUniversity(true);
@@ -308,9 +216,9 @@ class MyScene extends Phaser.Scene {
       }
     });
 
-    // Hotspot for Bank (now hotspots[1]) - using BudgetingTool for now
-    const bankHotspot = this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'bank_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height).setOrigin(0.5);
-    this.physics.world.enable(bankHotspot);
+    // Hotspot for Bank (hotspots[1]) - using CreditScoreCalculator for now
+    const bankHotspot = this.physics.add.sprite(this.hotspots[1].x, this.hotspots[1].y, null).setDisplaySize(this.hotspots[1].width, this.hotspots[1].height);
+    bankHotspot.setVisible(false);
     this.physics.add.overlap(this.player, bankHotspot, () => {
       if (!this.isPlayerInBudgetingHotspot && this.hasExitedBudgetingHotspot && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showBistro && !this.showPoliceStation) {
         this.setShowBudgetingTool(true);
@@ -324,9 +232,9 @@ class MyScene extends Phaser.Scene {
       }
     });
 
-    // Hotspot for Town Hall (hotspots[2]) - using BudgetingTool for now
-    const townHallHotspot = this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'townhall_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height).setOrigin(0.5);
-    this.physics.world.enable(townHallHotspot);
+    // Hotspot for Town Hall (hotspots[2])
+    const townHallHotspot = this.physics.add.sprite(this.hotspots[2].x, this.hotspots[2].y, null).setDisplaySize(this.hotspots[2].width, this.hotspots[2].height);
+    townHallHotspot.setVisible(false);
     this.physics.add.overlap(this.player, townHallHotspot, () => {
       if (!this.isPlayerInTownHallHotspot && this.hasExitedTownHallHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showShop && !this.showBistro && !this.showPoliceStation) {
         this.setShowTownHall(true);
@@ -341,8 +249,8 @@ class MyScene extends Phaser.Scene {
     });
 
     // Hotspot for Shop (hotspots[3]) - using CreditUniversity for now
-    const shopHotspot = this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'shop_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height).setOrigin(0.5);
-    this.physics.world.enable(shopHotspot);
+    const shopHotspot = this.physics.add.sprite(this.hotspots[3].x, this.hotspots[3].y, null).setDisplaySize(this.hotspots[3].width, this.hotspots[3].height);
+    shopHotspot.setVisible(false);
     this.physics.add.overlap(this.player, shopHotspot, () => {
       if (!this.isPlayerInShopHotspot && this.hasExitedShopHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showBistro && !this.showPoliceStation) {
         this.setShowShop(true);
@@ -356,9 +264,9 @@ class MyScene extends Phaser.Scene {
       }
     });
 
-    // Hotspot for Bistro (hotspots[4]) - using CreditScoreCalculator for now
-    const bistroHotspot = this.add.image(this.hotspots[4].x, this.hotspots[4].y, 'bistro_front').setDisplaySize(this.hotspots[4].width, this.hotspots[4].height).setOrigin(0.5);
-    this.physics.world.enable(bistroHotspot);
+    // Hotspot for Bistro (hotspots[4]) - using AlternativeCreditReporting for now
+    const bistroHotspot = this.physics.add.sprite(this.hotspots[4].x, this.hotspots[4].y, null).setDisplaySize(this.hotspots[4].width, this.hotspots[4].height);
+    bistroHotspot.setVisible(false);
     this.physics.add.overlap(this.player, bistroHotspot, () => {
       if (!this.isPlayerInBistroHotspot && this.hasExitedBistroHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showPoliceStation) {
         this.setShowBistro(true);
@@ -372,9 +280,9 @@ class MyScene extends Phaser.Scene {
       }
     });
 
-    // Hotspot for Police Station (hotspots[5]) - using AlternativeCreditReporting for now
-    const policeStationHotspot = this.add.image(this.hotspots[5].x, this.hotspots[5].y, 'bank_front').setDisplaySize(this.hotspots[5].width, this.hotspots[5].height).setOrigin(0.5);
-    this.physics.world.enable(policeStationHotspot);
+    // Hotspot for Police Station (hotspots[5])
+    const policeStationHotspot = this.physics.add.sprite(this.hotspots[5].x, this.hotspots[5].y, null).setDisplaySize(this.hotspots[5].width, this.hotspots[5].height);
+    policeStationHotspot.setVisible(false);
     this.physics.add.overlap(this.player, policeStationHotspot, () => {
       if (!this.isPlayerInPoliceStationHotspot && this.hasExitedPoliceStationHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showBistro) {
         this.setShowPoliceStation(true);
@@ -539,7 +447,7 @@ function Game() {
   const [hasExitedCreditUniversityHotspot, setHasExitedCreditUniversityHotspot] = useState(true);
   const [hasExitedCreditScoreCalculatorHotspot, setHasExitedCreditScoreCalculatorHotspot] = useState(true);
   const [hasExitedAlternativeCreditReportingHotspot, setHasExitedAlternativeCreditReportingHotspot] = useState(true);
-  const [hasExitedCentralCreditUniversityHotspot, setHasExitedCentralCreditUniversityHotspot] = useState(true);
+  const [hasExitedCentralCreditUniversity, setHasExitedCentralCreditUniversity] = useState(true);
   const [hasExitedTownHallHotspot, setHasExitedTownHallHotspot] = useState(true);
   const [hasExitedShopHotspot, setHasExitedShopHotspot] = useState(true);
   const [hasExitedBistroHotspot, setHasExitedBistroHotspot] = useState(true);
