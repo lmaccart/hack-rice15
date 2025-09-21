@@ -25,6 +25,10 @@ class MyScene extends Phaser.Scene {
     this.setIsPlayerInCreditScoreCalculatorHotspot = () => {};
     this.setShowAlternativeCreditReporting = () => {};
     this.setIsPlayerInAlternativeCreditReportingHotspot = () => {};
+    this.showBudgetingTool = false; // New property to hold the state from React
+    this.showCreditUniversity = false; // New property
+    this.showCreditScoreCalculator = false; // New property
+    this.showAlternativeCreditReporting = false; // New property
   }
 
   init(data) {
@@ -37,6 +41,10 @@ class MyScene extends Phaser.Scene {
     this.setIsPlayerInCreditScoreCalculatorHotspot = data.setIsPlayerInCreditScoreCalculatorHotspot;
     this.setShowAlternativeCreditReporting = data.setShowAlternativeCreditReporting;
     this.setIsPlayerInAlternativeCreditReportingHotspot = data.setIsPlayerInAlternativeCreditReportingHotspot;
+    this.showBudgetingTool = data.showBudgetingTool; // Set the property from passed data
+    this.showCreditUniversity = data.showCreditUniversity; // Set the property
+    this.showCreditScoreCalculator = data.showCreditScoreCalculator; // Set the property
+    this.showAlternativeCreditReporting = data.showAlternativeCreditReporting; // Set the property
   }
 
   preload() {
@@ -44,6 +52,9 @@ class MyScene extends Phaser.Scene {
     this.load.image('fence', 'img/bkgdArt/Fence.png');
     this.load.image('path', 'img/bkgdArt/Path.png');
     this.load.image('tree', 'img/bkgdArt/Tree.png');
+    this.load.image('autumnal_tree', 'img/bkgdArt/Autumnal_Tree_2.png');
+    this.load.image('fence_east', 'img/bkgdArt/Fence_East.jpeg');
+    this.load.image('fence_west', 'img/bkgdArt/Fence_West.jpg');
     this.load.image('bank_front', 'img/storefronts/bank_front.png');
     this.load.image('creditu_front', 'img/storefronts/creditu.png');
 
@@ -112,8 +123,8 @@ class MyScene extends Phaser.Scene {
       this.fences.create(x * tileSize + tileSize / 2, (numRows - 1) * tileSize + tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
     }
     for (let y = 1; y < numRows - 1; y++) {
-      this.fences.create(tileSize / 2, y * tileSize + tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
-      this.fences.create((numCols - 1) * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
+      this.fences.create(tileSize / 2, y * tileSize + tileSize / 2, 'fence_east').setDisplaySize(tileSize, tileSize);
+      this.fences.create((numCols - 1) * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'fence_west').setDisplaySize(tileSize, tileSize);
     }
 
     // Mark fence tiles as occupied (after drawing them)
@@ -126,18 +137,32 @@ class MyScene extends Phaser.Scene {
       this.occupiedTiles.add(`${numCols - 1},${y}`);
     }
 
-    // Draw buildings/hotspots
-    this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'bank_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height);
-    this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'creditu_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height);
-    this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'bank_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height);
-    this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'bank_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height);
-
     // Example paths (adjust as needed)
     const config = this.sys.game.config; // Re-declare config here for use in drawPath calls
     allPathTiles.push(...this.drawPath(config.width / 2, config.height - tileSize / 2, this.hotspots[0].x, this.hotspots[0].y, config)); // from bottom center to budgeting
     allPathTiles.push(...this.drawPath(this.hotspots[0].x, this.hotspots[0].y, this.hotspots[1].x, this.hotspots[1].y, config)); // budgeting to credit university
     allPathTiles.push(...this.drawPath(this.hotspots[1].x, this.hotspots[1].y, this.hotspots[2].x, this.hotspots[2].y, config)); // credit university to credit score calculator
     allPathTiles.push(...this.drawPath(this.hotspots[2].x, this.hotspots[2].y, this.hotspots[3].x, this.hotspots[3].y, config)); // credit score calculator to alternative credit reporting
+
+    // Mark building tiles as occupied
+    this.hotspots.forEach(hotspot => {
+      const startCol = Math.floor((hotspot.x - hotspot.width / 2) / tileSize);
+      const endCol = Math.floor((hotspot.x + hotspot.width / 2) / tileSize);
+      const startRow = Math.floor((hotspot.y - hotspot.height / 2) / tileSize);
+      const endRow = Math.floor((hotspot.y + hotspot.height / 2) / tileSize);
+
+      for (let y = startRow; y <= endRow; y++) {
+        for (let x = startCol; x <= endCol; x++) {
+          this.occupiedTiles.add(`${x},${y}`);
+        }
+      }
+    });
+
+    // Draw buildings/hotspots
+    this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'bank_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height);
+    this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'creditu_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height);
+    this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'bank_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height);
+    this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'bank_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height);
 
     // Scatter random trees
     const numTrees = 100; // adjust as needed (increased from 50)
@@ -150,7 +175,8 @@ class MyScene extends Phaser.Scene {
         if (!this.occupiedTiles.has(`${treeCol},${treeRow}`)) {
           treeX = treeCol * tileSize + tileSize / 2;
           treeY = treeRow * tileSize + tileSize / 2;
-          this.add.image(treeX, treeY, 'tree').setDisplaySize(tileSize, tileSize);
+          const treeType = Phaser.Math.Between(0, 1) === 0 ? 'tree' : 'autumnal_tree';
+          this.add.image(treeX, treeY, treeType).setDisplaySize(tileSize, tileSize);
           this.occupiedTiles.add(`${treeCol},${treeRow}`);
           placed = true;
         }
@@ -158,34 +184,39 @@ class MyScene extends Phaser.Scene {
     }
 
     // Calculate a safe spawn position
-    const spawnPaddingTiles = 3; // 3 tiles padding
+    // Find the bottom-leftmost path tile for player spawn
+    let bottomLeftPathTile = null;
+    let minX = Infinity;
+    let maxY = -Infinity;
+
+    allPathTiles.forEach(tileKey => {
+      const [x, y] = tileKey.split(',').map(Number);
+      if (y > maxY) {
+        maxY = y;
+        minX = x;
+        bottomLeftPathTile = { x, y };
+      } else if (y === maxY && x < minX) {
+        minX = x;
+        bottomLeftPathTile = { x, y };
+      }
+    });
+
     let safeSpawnX, safeSpawnY;
-    let isSafe = false;
-
-    while (!isSafe) {
-      const spawnCol = Phaser.Math.Between(spawnPaddingTiles, numCols - 1 - spawnPaddingTiles);
-      const spawnRow = Phaser.Math.Between(spawnPaddingTiles, numRows - 1 - spawnPaddingTiles);
-      
-      isSafe = true;
-      // Check if spawn area is clear of occupied tiles
-      for (let y = spawnRow - 1; y <= spawnRow + 1; y++) {
-        for (let x = spawnCol - 1; x <= spawnCol + 1; x++) {
-          if (this.occupiedTiles.has(`${x},${y}`)) {
-            isSafe = false;
-            break;
-          }
-        }
-        if (!isSafe) break;
-      }
-
-      if (isSafe) {
-        safeSpawnX = spawnCol * tileSize + tileSize / 2;
-        safeSpawnY = spawnRow * tileSize + tileSize / 2;
-      }
+    if (bottomLeftPathTile) {
+      safeSpawnX = bottomLeftPathTile.x * tileSize + tileSize / 2;
+      safeSpawnY = bottomLeftPathTile.y * tileSize + tileSize / 2;
+    } else {
+      // Fallback if no path tiles are found
+      safeSpawnX = this.sys.game.config.width / 2;
+      safeSpawnY = this.sys.game.config.height / 2;
     }
 
     this.player = this.physics.add.sprite(safeSpawnX, safeSpawnY, 'walk_south_0');
     this.player.setCollideWorldBounds(true);
+
+    // Set up camera to follow the player
+    this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
+    this.cameras.main.setZoom(3); // Adjust zoom level as needed
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.wasd = {
@@ -248,6 +279,23 @@ class MyScene extends Phaser.Scene {
   }
 
   update() {
+    const isAnyPopupOpen = this.showBudgetingTool || this.showCreditUniversity || this.showCreditScoreCalculator || this.showAlternativeCreditReporting;
+
+    if (isAnyPopupOpen) {
+      // If any popup is open, stop player movement and disable keyboard input
+      this.player.setVelocity(0);
+      this.player.anims.stop();
+      if (this.input.keyboard.enabled) {
+        this.input.keyboard.enabled = false;
+      }
+      return;
+    } else {
+      // If no popups are open, ensure keyboard input is enabled
+      if (!this.input.keyboard.enabled) {
+        this.input.keyboard.enabled = true;
+      }
+    }
+
     // Game logic per frame
     this.player.setVelocity(0);
 
@@ -347,8 +395,8 @@ class MyScene extends Phaser.Scene {
       this.occupiedTiles.add(finalTileKey); // Mark as occupied
     }
 
-    pathTiles.forEach(tile => this.occupiedTiles.add(tile));
-    return Array.from(pathTiles); // Return path tiles for spawn calculation
+    // pathTiles.forEach(tile => this.occupiedTiles.add(tile)); // This is now handled within the loops
+    return pathTiles;
   }
 
   teleportPlayerAway(hotspotX, hotspotY) {
@@ -451,6 +499,12 @@ function Game() {
         myScene.setShowAlternativeCreditReporting = setShowAlternativeCreditReporting;
         myScene.setIsPlayerInAlternativeCreditReportingHotspot = setIsPlayerInAlternativeCreditReportingHotspot;
 
+        // Pass current state of popups to the scene
+        myScene.showBudgetingTool = showBudgetingTool;
+        myScene.showCreditUniversity = showCreditUniversity;
+        myScene.showCreditScoreCalculator = showCreditScoreCalculator;
+        myScene.showAlternativeCreditReporting = showAlternativeCreditReporting;
+
         // Expose teleportPlayerAway to React components
         myScene.teleportPlayerAway = myScene.teleportPlayerAway.bind(myScene);
       }
@@ -459,7 +513,7 @@ function Game() {
     return () => {
       gameRef.current.destroy(true);
     };
-  }, [setShowBudgetingTool, setIsPlayerInBudgetingHotspot, setShowCreditUniversity, setIsPlayerInCreditUniversityHotspot, setShowCreditScoreCalculator, setIsPlayerInCreditScoreCalculatorHotspot, setShowAlternativeCreditReporting, setIsPlayerInAlternativeCreditReportingHotspot, gameRef]);
+  }, [setShowBudgetingTool, setIsPlayerInBudgetingHotspot, setShowCreditUniversity, setIsPlayerInCreditUniversityHotspot, setShowCreditScoreCalculator, setIsPlayerInCreditScoreCalculatorHotspot, setShowAlternativeCreditReporting, setIsPlayerInAlternativeCreditReportingHotspot, showBudgetingTool, showCreditUniversity, showCreditScoreCalculator, showAlternativeCreditReporting, gameRef]);
 
   return (
     <div>

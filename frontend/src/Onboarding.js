@@ -40,7 +40,7 @@ function Onboarding({ onOnboardingComplete }) {
 
   return (
     <div className="onboarding-container">
-      <h1>welcome to financial literacy!</h1>
+      <h1>welcome to Finlit!</h1>
       <form onSubmit={handleSubmit}>
         <label>
           email:
