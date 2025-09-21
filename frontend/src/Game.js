@@ -25,10 +25,34 @@ class MyScene extends Phaser.Scene {
     this.setIsPlayerInCreditScoreCalculatorHotspot = () => {};
     this.setShowAlternativeCreditReporting = () => {};
     this.setIsPlayerInAlternativeCreditReportingHotspot = () => {};
+    this.setShowCentralCreditUniversity = () => {};
+    this.setIsPlayerInCentralCreditUniversityHotspot = () => {};
+    this.setShowTownHall = () => {};
+    this.setIsPlayerInTownHallHotspot = () => {};
+    this.setShowShop = () => {};
+    this.setIsPlayerInShopHotspot = () => {};
+    this.setShowBistro = () => {};
+    this.setIsPlayerInBistroHotspot = () => {};
+    this.setShowPoliceStation = () => {};
+    this.setIsPlayerInPoliceStationHotspot = () => {};
     this.showBudgetingTool = false; // New property to hold the state from React
     this.showCreditUniversity = false; // New property
     this.showCreditScoreCalculator = false; // New property
     this.showAlternativeCreditReporting = false; // New property
+    this.showCentralCreditUniversity = false; // New property for central Credit University
+    this.showTownHall = false; // New property
+    this.showShop = false; // New property
+    this.showBistro = false; // New property
+    this.showPoliceStation = false; // New property
+    this.hasExitedBudgetingHotspot = true; // New property for cooldown
+    this.hasExitedCreditUniversityHotspot = true; // New property for cooldown
+    this.hasExitedCreditScoreCalculatorHotspot = true; // New property for cooldown
+    this.hasExitedAlternativeCreditReportingHotspot = true; // New property for cooldown
+    this.hasExitedCentralCreditUniversityHotspot = true; // New property for cooldown
+    this.hasExitedTownHallHotspot = true; // New property for cooldown
+    this.hasExitedShopHotspot = true; // New property for cooldown
+    this.hasExitedBistroHotspot = true; // New property for cooldown
+    this.hasExitedPoliceStationHotspot = true; // New property for cooldown
   }
 
   init(data) {
@@ -41,10 +65,34 @@ class MyScene extends Phaser.Scene {
     this.setIsPlayerInCreditScoreCalculatorHotspot = data.setIsPlayerInCreditScoreCalculatorHotspot;
     this.setShowAlternativeCreditReporting = data.setShowAlternativeCreditReporting;
     this.setIsPlayerInAlternativeCreditReportingHotspot = data.setIsPlayerInAlternativeCreditReportingHotspot;
+    this.setShowCentralCreditUniversity = data.setShowCentralCreditUniversity;
+    this.setIsPlayerInCentralCreditUniversityHotspot = data.setIsPlayerInCentralCreditUniversityHotspot;
+    this.setShowTownHall = data.setShowTownHall;
+    this.setIsPlayerInTownHallHotspot = data.setIsPlayerInTownHallHotspot;
+    this.setShowShop = data.setShowShop;
+    this.setIsPlayerInShopHotspot = data.setIsPlayerInShopHotspot;
+    this.setShowBistro = data.setShowBistro;
+    this.setIsPlayerInBistroHotspot = data.setIsPlayerInBistroHotspot;
+    this.setShowPoliceStation = data.setShowPoliceStation;
+    this.setIsPlayerInPoliceStationHotspot = data.setIsPlayerInPoliceStationHotspot;
     this.showBudgetingTool = data.showBudgetingTool; // Set the property from passed data
     this.showCreditUniversity = data.showCreditUniversity; // Set the property
     this.showCreditScoreCalculator = data.showCreditScoreCalculator; // Set the property
     this.showAlternativeCreditReporting = data.showAlternativeCreditReporting; // Set the property
+    this.showCentralCreditUniversity = data.showCentralCreditUniversity; // Set the property for central Credit University
+    this.showTownHall = data.showTownHall; // Set the property
+    this.showShop = data.showShop; // Set the property
+    this.showBistro = data.showBistro; // Set the property
+    this.showPoliceStation = data.showPoliceStation; // Set the property
+    this.hasExitedBudgetingHotspot = data.hasExitedBudgetingHotspot; // Set the property for cooldown
+    this.hasExitedCreditUniversityHotspot = data.hasExitedCreditUniversityHotspot; // Set the property for cooldown
+    this.hasExitedCreditScoreCalculatorHotspot = data.hasExitedCreditScoreCalculatorHotspot; // Set the property for cooldown
+    this.hasExitedAlternativeCreditReportingHotspot = data.hasExitedAlternativeCreditReportingHotspot; // Set the property for cooldown
+    this.hasExitedCentralCreditUniversityHotspot = data.hasExitedCentralCreditUniversityHotspot; // Set the property for cooldown
+    this.hasExitedTownHallHotspot = data.hasExitedTownHallHotspot; // Set the property for cooldown
+    this.hasExitedShopHotspot = data.hasExitedShopHotspot; // Set the property for cooldown
+    this.hasExitedBistroHotspot = data.hasExitedBistroHotspot; // Set the property for cooldown
+    this.hasExitedPoliceStationHotspot = data.hasExitedPoliceStationHotspot; // Set the property for cooldown
   }
 
   preload() {
@@ -53,10 +101,12 @@ class MyScene extends Phaser.Scene {
     this.load.image('path', 'img/bkgdArt/Path.png');
     this.load.image('tree', 'img/bkgdArt/Tree.png');
     this.load.image('autumnal_tree', 'img/bkgdArt/Autumnal_Tree_2.png');
-    this.load.image('fence_east', 'img/bkgdArt/Fence_East.jpeg');
-    this.load.image('fence_west', 'img/bkgdArt/Fence_West.jpg');
+    this.load.image('fence_vertical', 'img/bkgdArt/fence vertical.png');
     this.load.image('bank_front', 'img/storefronts/bank_front.png');
     this.load.image('creditu_front', 'img/storefronts/creditu.png');
+    this.load.image('townhall_front', 'img/bkgdArt/townhsll.png');
+    this.load.image('shop_front', 'img/bkgdArt/shop.png');
+    this.load.image('bistro_front', 'img/bkgdArt/bistro.png');
 
     // Load character walk animations
     const directions = ['east', 'north', 'north-east', 'north-west', 'south', 'south-east', 'south-west', 'west'];
@@ -89,25 +139,13 @@ class MyScene extends Phaser.Scene {
 
     // Define hotspot regions
     this.hotspots = [
-      { x: 5 * tileSize + tileSize / 2, y: 5 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'budgeting' },
-      { x: 15 * tileSize + tileSize / 2, y: 7 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'credituniversity' },
-      { x: 10 * tileSize + tileSize / 2, y: 3 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'creditscorecalculator' },
-      { x: 18 * tileSize + tileSize / 2, y: 12 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'alternativecreditreporting' },
+      { x: 5 * tileSize + tileSize / 2, y: 5 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'credituniversity' }, // Top-left Credit University
+      { x: (numCols - 5) * tileSize + tileSize / 2, y: 5 * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'bank' }, // Top-right Bank
+      { x: 9 * tileSize + tileSize / 2, y: 9 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'townhall' }, // Center-left Town Hall
+      { x: (numCols - 9) * tileSize + tileSize / 2, y: 9 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'shop' }, // Center-right Shop
+      { x: (numCols - 5) * tileSize + tileSize / 2, y: 9 * tileSize + tileSize / 2, width: tileSize * 3, height: tileSize * 3, name: 'bistro' }, // Center-right Bistro
+      { x: numCols / 2 * tileSize + tileSize / 2, y: (numRows - 5) * tileSize + tileSize / 2, width: tileSize * 4, height: tileSize * 4, name: 'policestation' }, // Bottom-center Police Station
     ];
-
-    // Mark building tiles as occupied
-    this.hotspots.forEach(hotspot => {
-      const startCol = Math.floor((hotspot.x - hotspot.width / 2) / tileSize);
-      const endCol = Math.floor((hotspot.x + hotspot.width / 2) / tileSize);
-      const startRow = Math.floor((hotspot.y - hotspot.height / 2) / tileSize);
-      const endRow = Math.floor((hotspot.y + hotspot.height / 2) / tileSize);
-
-      for (let y = startRow; y <= endRow; y++) {
-        for (let x = startCol; x <= endCol; x++) {
-          this.occupiedTiles.add(`${x},${y}`);
-        }
-      }
-    });
 
     // Draw grass background (across entire grid first)
     for (let y = 0; y < numRows; y++) {
@@ -123,8 +161,8 @@ class MyScene extends Phaser.Scene {
       this.fences.create(x * tileSize + tileSize / 2, (numRows - 1) * tileSize + tileSize / 2, 'fence').setDisplaySize(tileSize, tileSize);
     }
     for (let y = 1; y < numRows - 1; y++) {
-      this.fences.create(tileSize / 2, y * tileSize + tileSize / 2, 'fence_east').setDisplaySize(tileSize, tileSize);
-      this.fences.create((numCols - 1) * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'fence_west').setDisplaySize(tileSize, tileSize);
+      this.fences.create(tileSize / 2, y * tileSize + tileSize / 2, 'fence_vertical').setDisplaySize(tileSize, tileSize);
+      this.fences.create((numCols - 1) * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 'fence_vertical').setDisplaySize(tileSize, tileSize);
     }
 
     // Mark fence tiles as occupied (after drawing them)
@@ -139,12 +177,30 @@ class MyScene extends Phaser.Scene {
 
     // Example paths (adjust as needed)
     const config = this.sys.game.config; // Re-declare config here for use in drawPath calls
-    allPathTiles.push(...this.drawPath(config.width / 2, config.height - tileSize / 2, this.hotspots[0].x, this.hotspots[0].y, config)); // from bottom center to budgeting
-    allPathTiles.push(...this.drawPath(this.hotspots[0].x, this.hotspots[0].y, this.hotspots[1].x, this.hotspots[1].y, config)); // budgeting to credit university
-    allPathTiles.push(...this.drawPath(this.hotspots[1].x, this.hotspots[1].y, this.hotspots[2].x, this.hotspots[2].y, config)); // credit university to credit score calculator
-    allPathTiles.push(...this.drawPath(this.hotspots[2].x, this.hotspots[2].y, this.hotspots[3].x, this.hotspots[3].y, config)); // credit score calculator to alternative credit reporting
 
-    // Mark building tiles as occupied
+    // Paths based on the provided image
+    const centerX = numCols / 2 * tileSize + tileSize / 2;
+    const centerY = numRows / 2 * tileSize + tileSize / 2;
+
+    // Central vertical path
+    allPathTiles.push(...this.drawPath(centerX, 0, centerX, numRows * tileSize, config));
+    // Central horizontal path (connecting Town Hall, Shop, Bistro)
+    allPathTiles.push(...this.drawPath(0, 9 * tileSize + tileSize / 2, numCols * tileSize, 9 * tileSize + tileSize / 2, config));
+
+    // Path to Credit University (hotspots[0])
+    allPathTiles.push(...this.drawPath(centerX, 5 * tileSize + tileSize / 2, this.hotspots[0].x, this.hotspots[0].y, config));
+    // Path to Bank (hotspots[1])
+    allPathTiles.push(...this.drawPath(centerX, 5 * tileSize + tileSize / 2, this.hotspots[1].x, this.hotspots[1].y, config));
+    // Path to Town Hall (hotspots[2])
+    allPathTiles.push(...this.drawPath(centerX, 9 * tileSize + tileSize / 2, this.hotspots[2].x, this.hotspots[2].y, config));
+    // Path from Town Hall to Shop (hotspots[3])
+    allPathTiles.push(...this.drawPath(this.hotspots[2].x, this.hotspots[2].y, this.hotspots[3].x, this.hotspots[3].y, config));
+    // Path from Shop to Bistro (hotspots[4])
+    allPathTiles.push(...this.drawPath(this.hotspots[3].x, this.hotspots[3].y, this.hotspots[4].x, this.hotspots[4].y, config));
+    // Path to Police Station (hotspots[5])
+    allPathTiles.push(...this.drawPath(centerX, (numRows - 5) * tileSize + tileSize / 2, this.hotspots[5].x, this.hotspots[5].y, config));
+
+    // Mark building tiles as occupied (moved here to allow paths underneath)
     this.hotspots.forEach(hotspot => {
       const startCol = Math.floor((hotspot.x - hotspot.width / 2) / tileSize);
       const endCol = Math.floor((hotspot.x + hotspot.width / 2) / tileSize);
@@ -159,10 +215,12 @@ class MyScene extends Phaser.Scene {
     });
 
     // Draw buildings/hotspots
-    this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'bank_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height);
-    this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'creditu_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height);
-    this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'bank_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height);
-    this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'bank_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height);
+    this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'creditu_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height); // Credit University
+    this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'bank_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height); // Bank
+    this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'townhall_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height); // Town Hall
+    this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'shop_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height); // Shop
+    this.add.image(this.hotspots[4].x, this.hotspots[4].y, 'bistro_front').setDisplaySize(this.hotspots[4].width, this.hotspots[4].height); // Bistro
+    this.add.image(this.hotspots[5].x, this.hotspots[5].y, 'bank_front').setDisplaySize(this.hotspots[5].width, this.hotspots[5].height); // Police Station (using bank_front as placeholder)
 
     // Scatter random trees
     const numTrees = 100; // adjust as needed (increased from 50)
@@ -184,32 +242,9 @@ class MyScene extends Phaser.Scene {
     }
 
     // Calculate a safe spawn position
-    // Find the bottom-leftmost path tile for player spawn
-    let bottomLeftPathTile = null;
-    let minX = Infinity;
-    let maxY = -Infinity;
-
-    allPathTiles.forEach(tileKey => {
-      const [x, y] = tileKey.split(',').map(Number);
-      if (y > maxY) {
-        maxY = y;
-        minX = x;
-        bottomLeftPathTile = { x, y };
-      } else if (y === maxY && x < minX) {
-        minX = x;
-        bottomLeftPathTile = { x, y };
-      }
-    });
-
-    let safeSpawnX, safeSpawnY;
-    if (bottomLeftPathTile) {
-      safeSpawnX = bottomLeftPathTile.x * tileSize + tileSize / 2;
-      safeSpawnY = bottomLeftPathTile.y * tileSize + tileSize / 2;
-    } else {
-      // Fallback if no path tiles are found
-      safeSpawnX = this.sys.game.config.width / 2;
-      safeSpawnY = this.sys.game.config.height / 2;
-    }
+    // Spawn player near the center of the map
+    let safeSpawnX = numCols / 2 * tileSize + tileSize / 2;
+    let safeSpawnY = (numRows / 2 + 2) * tileSize + tileSize / 2; // Slightly below the central horizontal path
 
     this.player = this.physics.add.sprite(safeSpawnX, safeSpawnY, 'walk_south_0');
     this.player.setCollideWorldBounds(true);
@@ -241,45 +276,121 @@ class MyScene extends Phaser.Scene {
     const budgetingHotspot = this.add.rectangle(this.hotspots[0].x, this.hotspots[0].y, this.hotspots[0].width, this.hotspots[0].height, 0xff0000, 0).setOrigin(0.5);
     this.physics.world.enable(budgetingHotspot);
     this.physics.add.overlap(this.player, budgetingHotspot, () => {
-      if (!this.isPlayerInBudgetingHotspot) {
+      if (!this.isPlayerInBudgetingHotspot && this.hasExitedBudgetingHotspot && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity) {
         this.setShowBudgetingTool(true);
         this.setIsPlayerInBudgetingHotspot(true);
+        this.setHasExitedBudgetingHotspot(false);
+      }
+    });
+    this.physics.add.overlap(this.player, budgetingHotspot, () => {},
+      (player, hotspot) => {},
+      this
+    );
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === budgetingHotspot) {
+        this.setHasExitedBudgetingHotspot(true);
       }
     });
 
-    // Hotspot for Credit University
-    const creditUniversityHotspot = this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'creditu_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height).setOrigin(0.5);
+    // Hotspot for Credit University (now hotspots[0])
+    const creditUniversityHotspot = this.add.image(this.hotspots[0].x, this.hotspots[0].y, 'creditu_front').setDisplaySize(this.hotspots[0].width, this.hotspots[0].height).setOrigin(0.5);
     this.physics.world.enable(creditUniversityHotspot);
     this.physics.add.overlap(this.player, creditUniversityHotspot, () => {
-      if (!this.isPlayerInCreditUniversityHotspot) {
+      if (!this.isPlayerInCreditUniversityHotspot && this.hasExitedCreditUniversityHotspot && !this.showBudgetingTool && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showBistro && !this.showPoliceStation) {
         this.setShowCreditUniversity(true);
         this.setIsPlayerInCreditUniversityHotspot(true);
+        this.setHasExitedCreditUniversityHotspot(false);
+      }
+    });
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === creditUniversityHotspot) {
+        this.setHasExitedCreditUniversityHotspot(true);
       }
     });
 
-    // Hotspot for Credit Score Calculator
-    const creditScoreCalculatorHotspot = this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'bank_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height).setOrigin(0.5);
-    this.physics.world.enable(creditScoreCalculatorHotspot);
-    this.physics.add.overlap(this.player, creditScoreCalculatorHotspot, () => {
-      if (!this.isPlayerInCreditScoreCalculatorHotspot) {
-        this.setShowCreditScoreCalculator(true);
-        this.setIsPlayerInCreditScoreCalculatorHotspot(true);
+    // Hotspot for Bank (now hotspots[1]) - using BudgetingTool for now
+    const bankHotspot = this.add.image(this.hotspots[1].x, this.hotspots[1].y, 'bank_front').setDisplaySize(this.hotspots[1].width, this.hotspots[1].height).setOrigin(0.5);
+    this.physics.world.enable(bankHotspot);
+    this.physics.add.overlap(this.player, bankHotspot, () => {
+      if (!this.isPlayerInBudgetingHotspot && this.hasExitedBudgetingHotspot && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showBistro && !this.showPoliceStation) {
+        this.setShowBudgetingTool(true);
+        this.setIsPlayerInBudgetingHotspot(true);
+        this.setHasExitedBudgetingHotspot(false);
+      }
+    });
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === bankHotspot) {
+        this.setHasExitedBudgetingHotspot(true);
       }
     });
 
-    // Hotspot for Alternative Credit Reporting
-    const altCreditReportingHotspot = this.add.rectangle(this.hotspots[3].x, this.hotspots[3].y, this.hotspots[3].width, this.hotspots[3].height, 0x0000ff, 0).setOrigin(0.5);
-    this.physics.world.enable(altCreditReportingHotspot);
-    this.physics.add.overlap(this.player, altCreditReportingHotspot, () => {
-      if (!this.isPlayerInAlternativeCreditReportingHotspot) {
-        this.setShowAlternativeCreditReporting(true);
-        this.setIsPlayerInAlternativeCreditReportingHotspot(true);
+    // Hotspot for Town Hall (hotspots[2]) - using BudgetingTool for now
+    const townHallHotspot = this.add.image(this.hotspots[2].x, this.hotspots[2].y, 'townhall_front').setDisplaySize(this.hotspots[2].width, this.hotspots[2].height).setOrigin(0.5);
+    this.physics.world.enable(townHallHotspot);
+    this.physics.add.overlap(this.player, townHallHotspot, () => {
+      if (!this.isPlayerInTownHallHotspot && this.hasExitedTownHallHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showShop && !this.showBistro && !this.showPoliceStation) {
+        this.setShowTownHall(true);
+        this.setIsPlayerInTownHallHotspot(true);
+        this.setHasExitedTownHallHotspot(false);
+      }
+    });
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === townHallHotspot) {
+        this.setHasExitedTownHallHotspot(true);
+      }
+    });
+
+    // Hotspot for Shop (hotspots[3]) - using CreditUniversity for now
+    const shopHotspot = this.add.image(this.hotspots[3].x, this.hotspots[3].y, 'shop_front').setDisplaySize(this.hotspots[3].width, this.hotspots[3].height).setOrigin(0.5);
+    this.physics.world.enable(shopHotspot);
+    this.physics.add.overlap(this.player, shopHotspot, () => {
+      if (!this.isPlayerInShopHotspot && this.hasExitedShopHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showBistro && !this.showPoliceStation) {
+        this.setShowShop(true);
+        this.setIsPlayerInShopHotspot(true);
+        this.setHasExitedShopHotspot(false);
+      }
+    });
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === shopHotspot) {
+        this.setHasExitedShopHotspot(true);
+      }
+    });
+
+    // Hotspot for Bistro (hotspots[4]) - using CreditScoreCalculator for now
+    const bistroHotspot = this.add.image(this.hotspots[4].x, this.hotspots[4].y, 'bistro_front').setDisplaySize(this.hotspots[4].width, this.hotspots[4].height).setOrigin(0.5);
+    this.physics.world.enable(bistroHotspot);
+    this.physics.add.overlap(this.player, bistroHotspot, () => {
+      if (!this.isPlayerInBistroHotspot && this.hasExitedBistroHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showPoliceStation) {
+        this.setShowBistro(true);
+        this.setIsPlayerInBistroHotspot(true);
+        this.setHasExitedBistroHotspot(false);
+      }
+    });
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === bistroHotspot) {
+        this.setHasExitedBistroHotspot(true);
+      }
+    });
+
+    // Hotspot for Police Station (hotspots[5]) - using AlternativeCreditReporting for now
+    const policeStationHotspot = this.add.image(this.hotspots[5].x, this.hotspots[5].y, 'bank_front').setDisplaySize(this.hotspots[5].width, this.hotspots[5].height).setOrigin(0.5);
+    this.physics.world.enable(policeStationHotspot);
+    this.physics.add.overlap(this.player, policeStationHotspot, () => {
+      if (!this.isPlayerInPoliceStationHotspot && this.hasExitedPoliceStationHotspot && !this.showBudgetingTool && !this.showCreditUniversity && !this.showCreditScoreCalculator && !this.showAlternativeCreditReporting && !this.showCentralCreditUniversity && !this.showTownHall && !this.showShop && !this.showBistro) {
+        this.setShowPoliceStation(true);
+        this.setIsPlayerInPoliceStationHotspot(true);
+        this.setHasExitedPoliceStationHotspot(false);
+      }
+    });
+    this.physics.world.on('overlapend', (gameObject1, gameObject2, body1, body2) => {
+      if (gameObject1 === this.player && gameObject2 === policeStationHotspot) {
+        this.setHasExitedPoliceStationHotspot(true);
       }
     });
   }
 
   update() {
-    const isAnyPopupOpen = this.showBudgetingTool || this.showCreditUniversity || this.showCreditScoreCalculator || this.showAlternativeCreditReporting;
+    const isAnyPopupOpen = this.showBudgetingTool || this.showCreditUniversity || this.showCreditScoreCalculator || this.showAlternativeCreditReporting || this.showCentralCreditUniversity || this.showTownHall || this.showShop || this.showBistro || this.showPoliceStation;
 
     if (isAnyPopupOpen) {
       // If any popup is open, stop player movement and disable keyboard input
@@ -306,7 +417,7 @@ class MyScene extends Phaser.Scene {
     const upIsDown = this.cursors.up.isDown || this.wasd.up.isDown;
     const downIsDown = this.cursors.down.isDown || this.wasd.down.isDown;
 
-    const playerSpeed = 80; // Decreased speed
+    const playerSpeed = 160;
 
     if (leftIsDown) {
       this.player.setVelocityX(-playerSpeed);
@@ -399,54 +510,6 @@ class MyScene extends Phaser.Scene {
     return pathTiles;
   }
 
-  teleportPlayerAway(hotspotX, hotspotY) {
-    const playerTileX = Math.floor(this.player.x / tileSize);
-    const playerTileY = Math.floor(this.player.y / tileSize);
-    const hotspotTileX = Math.floor(hotspotX / tileSize);
-    const hotspotTileY = Math.floor(hotspotY / tileSize);
-
-    let newPlayerTileX = playerTileX;
-    let newPlayerTileY = playerTileY;
-
-    // Try to move one tile away horizontally or vertically
-    if (playerTileX === hotspotTileX) {
-      // Player is directly above or below the hotspot
-      if (playerTileY < hotspotTileY) {
-        newPlayerTileY = hotspotTileY - 1; // Move up
-      } else {
-        newPlayerTileY = hotspotTileY + Math.ceil(this.hotspots[0].height / tileSize); // Move down
-      }
-    } else if (playerTileY === hotspotTileY) {
-      // Player is directly left or right of the hotspot
-      if (playerTileX < hotspotTileX) {
-        newPlayerTileX = hotspotTileX - 1; // Move left
-      } else {
-        newPlayerTileX = hotspotTileX + Math.ceil(this.hotspots[0].width / tileSize); // Move right
-      }
-    } else {
-      // Player is diagonally from the hotspot, move horizontally first
-      if (playerTileX < hotspotTileX) {
-        newPlayerTileX = hotspotTileX - 1;
-      } else {
-        newPlayerTileX = hotspotTileX + Math.ceil(this.hotspots[0].width / tileSize);
-      }
-    }
-
-    // Ensure new position is within bounds and not occupied
-    const targetX = newPlayerTileX * tileSize + tileSize / 2;
-    const targetY = newPlayerTileY * tileSize + tileSize / 2;
-
-    // Basic boundary check (can be more robust)
-    if (targetX > tileSize && targetX < this.sys.game.config.width - tileSize &&
-        targetY > tileSize && targetY < this.sys.game.config.height - tileSize &&
-        !this.occupiedTiles.has(`${newPlayerTileX},${newPlayerTileY}`)) {
-      this.player.setPosition(targetX, targetY);
-    } else {
-      // Fallback: if target is invalid, try another direction or just move to a default safe spot
-      // For simplicity, we'll just move to a fixed spot if the calculated one is invalid
-      this.player.setPosition(this.sys.game.config.width / 2, this.sys.game.config.height / 2); // Center of the map as a fallback
-    }
-  }
 }
 
 function Game() {
@@ -454,12 +517,33 @@ function Game() {
   const [showCreditUniversity, setShowCreditUniversity] = useState(false);
   const [showCreditScoreCalculator, setShowCreditScoreCalculator] = useState(false);
   const [showAlternativeCreditReporting, setShowAlternativeCreditReporting] = useState(false);
+  const [showCentralCreditUniversity, setShowCentralCreditUniversity] = useState(false);
+  const [showTownHall, setShowTownHall] = useState(false);
+  const [showShop, setShowShop] = useState(false);
+  const [showBistro, setShowBistro] = useState(false);
+  const [showPoliceStation, setShowPoliceStation] = useState(false);
 
   // new state variables to track if player is in hotspot
   const [isPlayerInBudgetingHotspot, setIsPlayerInBudgetingHotspot] = useState(false);
   const [isPlayerInCreditUniversityHotspot, setIsPlayerInCreditUniversityHotspot] = useState(false);
   const [isPlayerInCreditScoreCalculatorHotspot, setIsPlayerInCreditScoreCalculatorHotspot] = useState(false);
   const [isPlayerInAlternativeCreditReportingHotspot, setIsPlayerInAlternativeCreditReportingHotspot] = useState(false);
+  const [isPlayerInCentralCreditUniversityHotspot, setIsPlayerInCentralCreditUniversityHotspot] = useState(false);
+  const [isPlayerInTownHallHotspot, setIsPlayerInTownHallHotspot] = useState(false);
+  const [isPlayerInShopHotspot, setIsPlayerInShopHotspot] = useState(false);
+  const [isPlayerInBistroHotspot, setIsPlayerInBistroHotspot] = useState(false);
+  const [isPlayerInPoliceStationHotspot, setIsPlayerInPoliceStationHotspot] = useState(false);
+
+  // New state variables for popup cooldown
+  const [hasExitedBudgetingHotspot, setHasExitedBudgetingHotspot] = useState(true);
+  const [hasExitedCreditUniversityHotspot, setHasExitedCreditUniversityHotspot] = useState(true);
+  const [hasExitedCreditScoreCalculatorHotspot, setHasExitedCreditScoreCalculatorHotspot] = useState(true);
+  const [hasExitedAlternativeCreditReportingHotspot, setHasExitedAlternativeCreditReportingHotspot] = useState(true);
+  const [hasExitedCentralCreditUniversityHotspot, setHasExitedCentralCreditUniversityHotspot] = useState(true);
+  const [hasExitedTownHallHotspot, setHasExitedTownHallHotspot] = useState(true);
+  const [hasExitedShopHotspot, setHasExitedShopHotspot] = useState(true);
+  const [hasExitedBistroHotspot, setHasExitedBistroHotspot] = useState(true);
+  const [hasExitedPoliceStationHotspot, setHasExitedPoliceStationHotspot] = useState(true);
 
   const gameRef = useRef(null); // Create a ref for the Phaser game instance
 
@@ -498,30 +582,70 @@ function Game() {
         myScene.setIsPlayerInCreditScoreCalculatorHotspot = setIsPlayerInCreditScoreCalculatorHotspot;
         myScene.setShowAlternativeCreditReporting = setShowAlternativeCreditReporting;
         myScene.setIsPlayerInAlternativeCreditReportingHotspot = setIsPlayerInAlternativeCreditReportingHotspot;
+        myScene.setShowCentralCreditUniversity = setShowCentralCreditUniversity;
+        myScene.setIsPlayerInCentralCreditUniversityHotspot = setIsPlayerInCentralCreditUniversityHotspot;
+        myScene.setShowTownHall = setShowTownHall;
+        myScene.setIsPlayerInTownHallHotspot = setIsPlayerInTownHallHotspot;
+        myScene.setShowShop = setShowShop;
+        myScene.setIsPlayerInShopHotspot = setIsPlayerInShopHotspot;
+        myScene.setShowBistro = setShowBistro;
+        myScene.setIsPlayerInBistroHotspot = setIsPlayerInBistroHotspot;
+        myScene.setShowPoliceStation = setShowPoliceStation;
+        myScene.setIsPlayerInPoliceStationHotspot = setIsPlayerInPoliceStationHotspot;
+
+        // Expose React state setters for cooldown
+        myScene.setHasExitedBudgetingHotspot = setHasExitedBudgetingHotspot;
+        myScene.setHasExitedCreditUniversityHotspot = setHasExitedCreditUniversityHotspot;
+        myScene.setHasExitedCreditScoreCalculatorHotspot = setHasExitedCreditScoreCalculatorHotspot;
+        myScene.setHasExitedAlternativeCreditReportingHotspot = setHasExitedAlternativeCreditReportingHotspot;
+        myScene.setHasExitedCentralCreditUniversityHotspot = setHasExitedCentralCreditUniversityHotspot;
+        myScene.setHasExitedTownHallHotspot = setHasExitedTownHallHotspot;
+        myScene.setHasExitedShopHotspot = setHasExitedShopHotspot;
+        myScene.setHasExitedBistroHotspot = setHasExitedBistroHotspot;
+        myScene.setHasExitedPoliceStationHotspot = setHasExitedPoliceStationHotspot;
 
         // Pass current state of popups to the scene
-        myScene.showBudgetingTool = showBudgetingTool;
-        myScene.showCreditUniversity = showCreditUniversity;
-        myScene.showCreditScoreCalculator = showCreditScoreCalculator;
-        myScene.showAlternativeCreditReporting = showAlternativeCreditReporting;
+        // These will be updated directly in the onClose handlers now
+        // myScene.showBudgetingTool = showBudgetingTool;
+        // myScene.showCreditUniversity = showCreditUniversity;
+        // myScene.showCreditScoreCalculator = showCreditScoreCalculator;
+        // myScene.showAlternativeCreditReporting = showAlternativeCreditReporting;
+        myScene.showCentralCreditUniversity = showCentralCreditUniversity;
+        myScene.showTownHall = showTownHall;
+        myScene.showShop = showShop;
+        myScene.showBistro = showBistro;
+        myScene.showPoliceStation = showPoliceStation;
 
-        // Expose teleportPlayerAway to React components
-        myScene.teleportPlayerAway = myScene.teleportPlayerAway.bind(myScene);
+        // Pass current state of cooldowns to the scene
+        myScene.hasExitedBudgetingHotspot = hasExitedBudgetingHotspot;
+        myScene.hasExitedCreditUniversityHotspot = hasExitedCreditUniversityHotspot;
+        myScene.hasExitedCreditScoreCalculatorHotspot = hasExitedCreditScoreCalculatorHotspot;
+        myScene.hasExitedAlternativeCreditReportingHotspot = hasExitedAlternativeCreditReportingHotspot;
+        myScene.hasExitedCentralCreditUniversityHotspot = hasExitedCentralCreditUniversityHotspot;
+        myScene.hasExitedTownHallHotspot = hasExitedTownHallHotspot;
+        myScene.hasExitedShopHotspot = hasExitedShopHotspot;
+        myScene.hasExitedBistroHotspot = hasExitedBistroHotspot;
+        myScene.hasExitedPoliceStationHotspot = hasExitedPoliceStationHotspot;
       }
     });
 
     return () => {
       gameRef.current.destroy(true);
     };
-  }, [setShowBudgetingTool, setIsPlayerInBudgetingHotspot, setShowCreditUniversity, setIsPlayerInCreditUniversityHotspot, setShowCreditScoreCalculator, setIsPlayerInCreditScoreCalculatorHotspot, setShowAlternativeCreditReporting, setIsPlayerInAlternativeCreditReportingHotspot, showBudgetingTool, showCreditUniversity, showCreditScoreCalculator, showAlternativeCreditReporting, gameRef]);
+  }, [setShowBudgetingTool, setIsPlayerInBudgetingHotspot, setShowCreditUniversity, setIsPlayerInCreditUniversityHotspot, setShowCreditScoreCalculator, setIsPlayerInCreditScoreCalculatorHotspot, setShowAlternativeCreditReporting, setIsPlayerInAlternativeCreditReportingHotspot, setShowCentralCreditUniversity, setIsPlayerInCentralCreditUniversityHotspot, setShowTownHall, setIsPlayerInTownHallHotspot, setShowShop, setIsPlayerInShopHotspot, setShowBistro, setIsPlayerInBistroHotspot, setShowPoliceStation, setIsPlayerInPoliceStationHotspot, setHasExitedBudgetingHotspot, setHasExitedCreditUniversityHotspot, setHasExitedCreditScoreCalculatorHotspot, setHasExitedAlternativeCreditReportingHotspot, setHasExitedCentralCreditUniversityHotspot, setHasExitedTownHallHotspot, setHasExitedShopHotspot, setHasExitedBistroHotspot, setHasExitedPoliceStationHotspot, gameRef]);
 
   return (
     <div>
       <div id="game-container" style={{ width: '100%', height: '100vh' }} />
-      {showBudgetingTool && <BudgetingTool onClose={() => { setShowBudgetingTool(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInBudgetingHotspot(false); gameRef.current.scene.getScene('MyScene').teleportPlayerAway(gameRef.current.scene.getScene('MyScene').hotspots[0].x, gameRef.current.scene.getScene('MyScene').hotspots[0].y); }} />}
-      {showCreditUniversity && <CreditUniversity onClose={() => { setShowCreditUniversity(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInCreditUniversityHotspot(false); gameRef.current.scene.getScene('MyScene').teleportPlayerAway(gameRef.current.scene.getScene('MyScene').hotspots[1].x, gameRef.current.scene.getScene('MyScene').hotspots[1].y); }} />}
-      {showCreditScoreCalculator && <CreditScoreCalculator onClose={() => { setShowCreditScoreCalculator(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInCreditScoreCalculatorHotspot(false); gameRef.current.scene.getScene('MyScene').teleportPlayerAway(gameRef.current.scene.getScene('MyScene').hotspots[2].x, gameRef.current.scene.getScene('MyScene').hotspots[2].y); }} />}
-      {showAlternativeCreditReporting && <AlternativeCreditReporting onClose={() => { setShowAlternativeCreditReporting(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInAlternativeCreditReportingHotspot(false); gameRef.current.scene.getScene('MyScene').teleportPlayerAway(gameRef.current.scene.getScene('MyScene').hotspots[3].x, gameRef.current.scene.getScene('MyScene').hotspots[3].y); }} />}
+      {showBudgetingTool && <BudgetingTool onClose={() => { setShowBudgetingTool(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInBudgetingHotspot(false); gameRef.current.scene.getScene('MyScene').showBudgetingTool = false; }} />}
+      {showCreditUniversity && <CreditUniversity onClose={() => { setShowCreditUniversity(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInCreditUniversityHotspot(false); gameRef.current.scene.getScene('MyScene').showCreditUniversity = false; }} />}
+      {showCreditScoreCalculator && <CreditScoreCalculator onClose={() => { setShowCreditScoreCalculator(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInCreditScoreCalculatorHotspot(false); gameRef.current.scene.getScene('MyScene').showCreditScoreCalculator = false; }} />}
+      {showAlternativeCreditReporting && <AlternativeCreditReporting onClose={() => { setShowAlternativeCreditReporting(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInAlternativeCreditReportingHotspot(false); gameRef.current.scene.getScene('MyScene').showAlternativeCreditReporting = false; }} />}
+      {showCentralCreditUniversity && <CreditUniversity onClose={() => { setShowCentralCreditUniversity(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInCentralCreditUniversityHotspot(false); gameRef.current.scene.getScene('MyScene').showCentralCreditUniversity = false; }} />}
+      {showTownHall && <BudgetingTool onClose={() => { setShowTownHall(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInTownHallHotspot(false); gameRef.current.scene.getScene('MyScene').showTownHall = false; }} />}
+      {showShop && <CreditUniversity onClose={() => { setShowShop(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInShopHotspot(false); gameRef.current.scene.getScene('MyScene').showShop = false; }} />}
+      {showBistro && <CreditScoreCalculator onClose={() => { setShowBistro(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInBistroHotspot(false); gameRef.current.scene.getScene('MyScene').showBistro = false; }} />}
+      {showPoliceStation && <AlternativeCreditReporting onClose={() => { setShowPoliceStation(false); gameRef.current.scene.getScene('MyScene').setIsPlayerInPoliceStationHotspot(false); gameRef.current.scene.getScene('MyScene').showPoliceStation = false; }} />}
     </div>
   );
 }
