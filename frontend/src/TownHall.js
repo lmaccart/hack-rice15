@@ -323,7 +323,7 @@ reader.onerror = error => reject(error);
 
 const callGoogleVisionAPI = useCallback(async (base64ImageData, retryCount = 0) => {
 const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`;
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
 const payload = {
 contents: [{
