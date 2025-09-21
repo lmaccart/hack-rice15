@@ -6,6 +6,7 @@ import CreditUniversity from './CreditUniversity';
 import CreditScoreCalculator from './CreditScoreCalculator';
 import AlternativeCreditReporting from './AlternativeCreditReporting';
 import WizardChatbot from './WizardChatbot';
+import TownHall from './TownHall';
 
 const tileSize = 40;
 
@@ -433,7 +434,7 @@ class MyScene extends Phaser.Scene {
     const upIsDown = this.cursors.up.isDown || this.wasd.up.isDown;
     const downIsDown = this.cursors.down.isDown || this.wasd.down.isDown;
 
-    const playerSpeed = 160;
+    const playerSpeed = 60;
 
     if (leftIsDown) {
       this.player.setVelocityX(-playerSpeed);
@@ -626,7 +627,7 @@ function Game() {
 
       {activeOverlay === 'credituniversity' && <CreditUniversity onClose={handleCloseOverlay} />}
       {activeOverlay === 'bank' && <BudgetingTool onClose={handleCloseOverlay} />}
-      {activeOverlay === 'townhall' && <BudgetingTool onClose={handleCloseOverlay} />}
+      {activeOverlay === 'townhall' && <TownHall onClose={handleCloseOverlay} />}
       {activeOverlay === 'shop' && <CreditUniversity onClose={handleCloseOverlay} />}
       {activeOverlay === 'bistro' && <CreditScoreCalculator onClose={handleCloseOverlay} />}
       {activeOverlay === 'policestation' && <AlternativeCreditReporting onClose={handleCloseOverlay} />}
