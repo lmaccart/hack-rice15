@@ -1,10 +1,22 @@
+'use client';
+
+import { useState } from 'react';
 import OverlayWrapper from './OverlayWrapper';
+import QuizModal from '@/components/QuizModal';
+import { quizzes } from '@/lib/quizData';
 
 interface BistroOverlayProps {
   onClose: () => void;
 }
 
 export default function BistroOverlay({ onClose }: BistroOverlayProps) {
+  const [showQuiz, setShowQuiz] = useState(false);
+  const quiz = quizzes.bistro;
+
+  if (showQuiz) {
+    return <QuizModal quiz={quiz} buildingName="bistro" onClose={() => setShowQuiz(false)} />;
+  }
+
   return (
     <OverlayWrapper title="Budgeting Bistro" onClose={onClose}>
       <div className="space-y-6">
@@ -86,6 +98,14 @@ export default function BistroOverlay({ onClose }: BistroOverlayProps) {
             </ul>
           </div>
         </section>
+
+        {/* Quiz Button */}
+        <button
+          onClick={() => setShowQuiz(true)}
+          className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+        >
+          Test Your Knowledge
+        </button>
       </div>
     </OverlayWrapper>
   );

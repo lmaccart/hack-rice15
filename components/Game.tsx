@@ -5,6 +5,8 @@ import * as Phaser from 'phaser';
 import { MainScene } from '@/game/MainScene';
 import { OverlayType } from '@/types/game';
 import WizardChatbot from './WizardChatbot';
+import UserStatsHUD from './UserStatsHUD';
+import { useGameState } from '@/contexts/GameStateContext';
 
 // Import overlays (we'll create these next)
 import CreditUniversity from './overlays/CreditUniversity';
@@ -19,6 +21,7 @@ export default function Game() {
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [currentHotspotName, setCurrentHotspotName] = useState<string | null>(null);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const { markBuildingVisited } = useGameState();
 
   useEffect(() => {
     if (gameRef.current) return; // Prevent double initialization
@@ -72,7 +75,10 @@ export default function Game() {
   }, [activeOverlay, isChatbotOpen]);
 
   const handleInspectClick = () => {
-    setActiveOverlay(currentHotspotName as OverlayType);
+    if (currentHotspotName) {
+      markBuildingVisited(currentHotspotName);
+      setActiveOverlay(currentHotspotName as OverlayType);
+    }
   };
 
   const handleCloseOverlay = () => {
@@ -95,6 +101,9 @@ export default function Game() {
   return (
     <div className="relative w-full h-full">
       <div id="game-container" className="w-full h-full" />
+
+      {/* User Stats HUD */}
+      <UserStatsHUD />
 
       {/* Inspect button */}
       {currentHotspotName && !activeOverlay && (

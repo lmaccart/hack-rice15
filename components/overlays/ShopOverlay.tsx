@@ -1,10 +1,22 @@
+'use client';
+
+import { useState } from 'react';
 import OverlayWrapper from './OverlayWrapper';
+import QuizModal from '@/components/QuizModal';
+import { quizzes } from '@/lib/quizData';
 
 interface ShopOverlayProps {
   onClose: () => void;
 }
 
 export default function ShopOverlay({ onClose }: ShopOverlayProps) {
+  const [showQuiz, setShowQuiz] = useState(false);
+  const quiz = quizzes.shop;
+
+  if (showQuiz) {
+    return <QuizModal quiz={quiz} buildingName="shop" onClose={() => setShowQuiz(false)} />;
+  }
+
   return (
     <OverlayWrapper title="Smart Shopping" onClose={onClose}>
       <div className="space-y-6">
@@ -68,6 +80,14 @@ export default function ShopOverlay({ onClose }: ShopOverlayProps) {
             </p>
           </div>
         </section>
+
+        {/* Quiz Button */}
+        <button
+          onClick={() => setShowQuiz(true)}
+          className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+        >
+          Test Your Knowledge
+        </button>
       </div>
     </OverlayWrapper>
   );
