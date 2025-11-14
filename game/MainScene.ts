@@ -29,6 +29,7 @@ export class MainScene extends Phaser.Scene {
   public setCurrentHotspotName: (name: string | null) => void = () => {};
   public setActiveOverlay: (overlay: string | null) => void = () => {};
   public setIsChatbotOpen: (open: boolean) => void = () => {};
+  public getJoystickDirection: () => { x: number; y: number } = () => ({ x: 0, y: 0 });
   public activeOverlay: string | null = null;
   public isChatbotOpen = false;
 
@@ -427,10 +428,14 @@ export class MainScene extends Phaser.Scene {
     let animationKey = 'walk_south';
     let idleFrameKey = 'south_idle';
 
-    const leftIsDown = this.cursors.left.isDown || this.wasd.left.isDown;
-    const rightIsDown = this.cursors.right.isDown || this.wasd.right.isDown;
-    const upIsDown = this.cursors.up.isDown || this.wasd.up.isDown;
-    const downIsDown = this.cursors.down.isDown || this.wasd.down.isDown;
+    // Get joystick input for mobile
+    const joystick = this.getJoystickDirection();
+    const joystickThreshold = 0.3; // Minimum joystick input to register
+
+    const leftIsDown = this.cursors.left.isDown || this.wasd.left.isDown || joystick.x < -joystickThreshold;
+    const rightIsDown = this.cursors.right.isDown || this.wasd.right.isDown || joystick.x > joystickThreshold;
+    const upIsDown = this.cursors.up.isDown || this.wasd.up.isDown || joystick.y < -joystickThreshold;
+    const downIsDown = this.cursors.down.isDown || this.wasd.down.isDown || joystick.y > joystickThreshold;
 
     if (leftIsDown) {
       this.player.setVelocityX(-PLAYER_SPEED);

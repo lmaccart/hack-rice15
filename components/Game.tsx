@@ -6,6 +6,7 @@ import { MainScene } from '@/game/MainScene';
 import { OverlayType } from '@/types/game';
 import WizardChatbot from './WizardChatbot';
 import UserStatsHUD from './UserStatsHUD';
+import VirtualJoystick from './VirtualJoystick';
 import { useGameState } from '@/contexts/GameStateContext';
 
 // Import overlays (we'll create these next)
@@ -22,6 +23,7 @@ export default function Game() {
   const [currentHotspotName, setCurrentHotspotName] = useState<string | null>(null);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const { markBuildingVisited } = useGameState();
+  const joystickDirectionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (gameRef.current) return; // Prevent double initialization
@@ -54,6 +56,7 @@ export default function Game() {
         mainScene.setActiveOverlay = (overlay: string | null) => setActiveOverlay(overlay as OverlayType);
         mainScene.setCurrentHotspotName = setCurrentHotspotName;
         mainScene.setIsChatbotOpen = setIsChatbotOpen;
+        mainScene.getJoystickDirection = () => joystickDirectionRef.current;
       }
     });
 
@@ -84,6 +87,10 @@ export default function Game() {
   const handleCloseOverlay = () => {
     setActiveOverlay(null);
     setCurrentHotspotName(null);
+  };
+
+  const handleJoystickDirection = (direction: { x: number; y: number }) => {
+    joystickDirectionRef.current = direction;
   };
 
   const getHotspotDisplayName = (name: string) => {
@@ -125,6 +132,9 @@ export default function Game() {
 
       {/* Wizard Chatbot */}
       <WizardChatbot setIsChatbotOpen={setIsChatbotOpen} />
+
+      {/* Virtual Joystick for mobile */}
+      <VirtualJoystick onDirectionChange={handleJoystickDirection} />
     </div>
   );
 }
