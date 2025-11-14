@@ -4,6 +4,12 @@ import type { Hotspot } from '@/types/game';
 const TILE_SIZE = 40;
 const PLAYER_SPEED = 60;
 
+interface NPC {
+  sprite: Phaser.Physics.Arcade.Sprite;
+  moveTimer: number;
+  direction: { x: number; y: number };
+}
+
 export class MainScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -17,6 +23,7 @@ export class MainScene extends Phaser.Scene {
   private hotspots: Hotspot[] = [];
   private numCols = 0;
   private numRows = 0;
+  private npcs: NPC[] = [];
 
   // React state setters (to be injected)
   public setCurrentHotspotName: (name: string | null) => void = () => {};
@@ -72,6 +79,7 @@ export class MainScene extends Phaser.Scene {
     this.drawBuildings();
     this.createTrees();
     this.createPlayer();
+    this.createNPCs();
     this.setupHotspotPhysics();
   }
 
@@ -288,6 +296,31 @@ export class MainScene extends Phaser.Scene {
     };
   }
 
+  private createNPCs() {
+    const numNPCs = 4;
+
+    for (let i = 0; i < numNPCs; i++) {
+      // Spawn NPCs at random positions
+      const spawnX = Phaser.Math.Between(3, this.numCols - 3) * TILE_SIZE + TILE_SIZE / 2;
+      const spawnY = Phaser.Math.Between(3, this.numRows - 3) * TILE_SIZE + TILE_SIZE / 2;
+
+      const npcSprite = this.physics.add.sprite(spawnX, spawnY, 'south_idle');
+      npcSprite.setCollideWorldBounds(true);
+      npcSprite.setScale(0.8); // Make NPCs slightly smaller than player
+
+      const npc: NPC = {
+        sprite: npcSprite,
+        moveTimer: Phaser.Math.Between(1000, 3000),
+        direction: { x: 0, y: 0 }
+      };
+
+      this.npcs.push(npc);
+
+      // Add collision with player
+      this.physics.add.collider(this.player, npcSprite);
+    }
+  }
+
   private setupHotspotPhysics() {
     this.hotspots.forEach(hotspot => {
       const hotspotSprite = this.physics.add.sprite(hotspot.x, hotspot.y, '')
@@ -444,5 +477,85 @@ export class MainScene extends Phaser.Scene {
         : 'south';
       this.player.setTexture(`${lastAnimationDirection}_idle`);
     }
+
+    // Update NPCs
+    this.updateNPCs();
+  }
+
+  private updateNPCs() {
+    const NPC_SPEED = 30;
+    const delta = this.game.loop.delta;
+
+    this.npcs.forEach(npc => {
+      npc.moveTimer -= delta;
+
+      // Change direction randomly every few seconds
+      if (npc.moveTimer <= 0) {
+        const random = Math.random();
+        if (random < 0.3) {
+          // Stop moving
+          npc.direction = { x: 0, y: 0 };
+        } else {
+          // Pick a random direction
+          const directions = [
+            { x: -1, y: 0 },  // west
+            { x: 1, y: 0 },   // east
+            { x: 0, y: -1 },  // north
+            { x: 0, y: 1 },   // south
+            { x: -1, y: -1 }, // north-west
+            { x: 1, y: -1 },  // north-east
+            { x: -1, y: 1 },  // south-west
+            { x: 1, y: 1 }    // south-east
+          ];
+          npc.direction = Phaser.Utils.Array.GetRandom(directions);
+        }
+        npc.moveTimer = Phaser.Math.Between(2000, 5000);
+      }
+
+      // Apply movement
+      npc.sprite.setVelocity(
+        npc.direction.x * NPC_SPEED,
+        npc.direction.y * NPC_SPEED
+      );
+
+      // Update animation based on direction
+      if (npc.direction.x !== 0 || npc.direction.y !== 0) {
+        let animKey = 'walk_south';
+        let idleKey = 'south_idle';
+
+        if (npc.direction.x < 0 && npc.direction.y < 0) {
+          animKey = 'walk_north-west';
+          idleKey = 'north-west_idle';
+        } else if (npc.direction.x > 0 && npc.direction.y < 0) {
+          animKey = 'walk_north-east';
+          idleKey = 'north-east_idle';
+        } else if (npc.direction.x < 0 && npc.direction.y > 0) {
+          animKey = 'walk_south-west';
+          idleKey = 'south-west_idle';
+        } else if (npc.direction.x > 0 && npc.direction.y > 0) {
+          animKey = 'walk_south-east';
+          idleKey = 'south-east_idle';
+        } else if (npc.direction.x < 0) {
+          animKey = 'walk_west';
+          idleKey = 'west_idle';
+        } else if (npc.direction.x > 0) {
+          animKey = 'walk_east';
+          idleKey = 'east_idle';
+        } else if (npc.direction.y < 0) {
+          animKey = 'walk_north';
+          idleKey = 'north_idle';
+        } else if (npc.direction.y > 0) {
+          animKey = 'walk_south';
+          idleKey = 'south_idle';
+        }
+
+        if (this.anims.exists(animKey)) {
+          npc.sprite.anims.play(animKey, true);
+        }
+      } else {
+        npc.sprite.anims.stop();
+        npc.sprite.setTexture('south_idle');
+      }
+    });
   }
 }
