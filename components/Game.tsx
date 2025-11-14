@@ -7,6 +7,7 @@ import { OverlayType } from '@/types/game';
 import WizardChatbot from './WizardChatbot';
 import UserStatsHUD from './UserStatsHUD';
 import VirtualJoystick from './VirtualJoystick';
+import ParticleEffect from './ParticleEffect';
 import { useGameState } from '@/contexts/GameStateContext';
 
 // Import overlays (we'll create these next)
@@ -22,7 +23,7 @@ export default function Game() {
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [currentHotspotName, setCurrentHotspotName] = useState<string | null>(null);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const { markBuildingVisited } = useGameState();
+  const { markBuildingVisited, levelUpTrigger, achievementTrigger } = useGameState();
   const joystickDirectionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -135,6 +136,10 @@ export default function Game() {
 
       {/* Virtual Joystick for mobile */}
       <VirtualJoystick onDirectionChange={handleJoystickDirection} />
+
+      {/* Particle Effects */}
+      <ParticleEffect trigger={levelUpTrigger} type="levelup" x={50} y={30} />
+      <ParticleEffect trigger={achievementTrigger} type="achievement" x={50} y={30} />
     </div>
   );
 }
