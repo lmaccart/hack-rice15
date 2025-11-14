@@ -82,6 +82,11 @@ export default function WizardChatbot({ setIsChatbotOpen }: WizardChatbotProps) 
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Stop all key events from propagating to the game
+    e.stopPropagation();
+  };
+
   return (
     <>
       {/* Wizard Button */}
@@ -152,6 +157,7 @@ export default function WizardChatbot({ setIsChatbotOpen }: WizardChatbotProps) 
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask me about finances..."
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-gray-800"

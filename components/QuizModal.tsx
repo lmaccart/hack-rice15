@@ -136,19 +136,19 @@ export default function QuizModal({ quiz, buildingName, onClose }: QuizModalProp
                   disabled={showExplanation}
                   className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                     showCorrect
-                      ? 'bg-green-50 border-green-500 text-green-900'
+                      ? 'bg-green-50 border-green-500'
                       : showWrong
-                      ? 'bg-red-50 border-red-500 text-red-900'
+                      ? 'bg-red-50 border-red-500'
                       : isSelected
                       ? 'border-purple-500 bg-purple-50'
                       : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50'
                   } ${showExplanation ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <div className="flex items-center">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center mr-3 font-semibold">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full border-2 border-black flex items-center justify-center mr-3 font-semibold text-black">
                       {String.fromCharCode(65 + index)}
                     </span>
-                    <span className="flex-1">{option}</span>
+                    <span className="flex-1 text-black">{option}</span>
                     {showCorrect && <span className="text-2xl ml-2">✓</span>}
                     {showWrong && <span className="text-2xl ml-2">✗</span>}
                   </div>
