@@ -316,8 +316,7 @@ export class MainScene extends Phaser.Scene {
 
       this.npcs.push(npc);
 
-      // Add collision with player
-      this.physics.add.collider(this.player, npcSprite);
+      // No collision - NPCs can pass through player
     }
   }
 
@@ -359,6 +358,8 @@ export class MainScene extends Phaser.Scene {
         currentY * TILE_SIZE + TILE_SIZE / 2,
         'path'
       ).setDisplaySize(TILE_SIZE, TILE_SIZE);
+      // Mark path tiles as occupied to prevent trees from spawning
+      this.occupiedTiles.add(`${currentX},${currentY}`);
       currentX += currentX < targetX ? 1 : -1;
     }
 
@@ -370,6 +371,8 @@ export class MainScene extends Phaser.Scene {
         currentY * TILE_SIZE + TILE_SIZE / 2,
         'path'
       ).setDisplaySize(TILE_SIZE, TILE_SIZE);
+      // Mark path tiles as occupied to prevent trees from spawning
+      this.occupiedTiles.add(`${currentX},${currentY}`);
       currentY += currentY < targetY ? 1 : -1;
     }
 
@@ -379,6 +382,8 @@ export class MainScene extends Phaser.Scene {
       currentY * TILE_SIZE + TILE_SIZE / 2,
       'path'
     ).setDisplaySize(TILE_SIZE, TILE_SIZE);
+    // Mark final path tile as occupied
+    this.occupiedTiles.add(`${currentX},${currentY}`);
   }
 
   update() {
