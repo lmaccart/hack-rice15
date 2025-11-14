@@ -67,8 +67,8 @@ export class MainScene extends Phaser.Scene {
 
     this.createMap();
     this.defineHotspots();
+    this.drawPaths(); // Draw paths BEFORE marking building tiles occupied
     this.markBuildingTilesOccupied();
-    this.drawPaths();
     this.drawBuildings();
     this.createTrees();
     this.createPlayer();
@@ -294,17 +294,21 @@ export class MainScene extends Phaser.Scene {
         .setDisplaySize(hotspot.width, hotspot.height);
       hotspotSprite.setVisible(false);
 
-      this.physics.add.overlap(this.player, hotspotSprite, () => {
-        if (!this.activeOverlay) {
-          this.setCurrentHotspotName(hotspot.name);
-        }
-      });
+      // Create a collider for this specific hotspot
+      this.physics.add.overlap(
+        this.player,
+        hotspotSprite,
+        () => {
+          if (!this.activeOverlay) {
+            this.setCurrentHotspotName(hotspot.name);
+          }
+        },
+        undefined,
+        this
+      );
 
-      this.physics.world.on('overlapend', (gameObject1: Phaser.GameObjects.GameObject, gameObject2: Phaser.GameObjects.GameObject) => {
-        if (gameObject1 === this.player && gameObject2 === hotspotSprite) {
-          this.setCurrentHotspotName(null);
-        }
-      });
+      // Store custom data on the hotspot sprite to track if player is inside
+      (hotspotSprite as any).hotspotName = hotspot.name;
     });
   }
 
@@ -316,42 +320,32 @@ export class MainScene extends Phaser.Scene {
 
     // Move horizontally first
     while (currentX !== targetX) {
-      const tileKey = `${currentX},${currentY}`;
-      if (!this.occupiedTiles.has(tileKey)) {
-        this.add.image(
-          currentX * TILE_SIZE + TILE_SIZE / 2,
-          currentY * TILE_SIZE + TILE_SIZE / 2,
-          'path'
-        ).setDisplaySize(TILE_SIZE, TILE_SIZE);
-        this.occupiedTiles.add(tileKey);
-      }
-      currentX += currentX < targetX ? 1 : -1;
-    }
-
-    // Then move vertically
-    while (currentY !== targetY) {
-      const tileKey = `${currentX},${currentY}`;
-      if (!this.occupiedTiles.has(tileKey)) {
-        this.add.image(
-          currentX * TILE_SIZE + TILE_SIZE / 2,
-          currentY * TILE_SIZE + TILE_SIZE / 2,
-          'path'
-        ).setDisplaySize(TILE_SIZE, TILE_SIZE);
-        this.occupiedTiles.add(tileKey);
-      }
-      currentY += currentY < targetY ? 1 : -1;
-    }
-
-    // Add final tile
-    const finalTileKey = `${currentX},${currentY}`;
-    if (!this.occupiedTiles.has(finalTileKey)) {
+      // Always draw path tiles, even under buildings
       this.add.image(
         currentX * TILE_SIZE + TILE_SIZE / 2,
         currentY * TILE_SIZE + TILE_SIZE / 2,
         'path'
       ).setDisplaySize(TILE_SIZE, TILE_SIZE);
-      this.occupiedTiles.add(finalTileKey);
+      currentX += currentX < targetX ? 1 : -1;
     }
+
+    // Then move vertically
+    while (currentY !== targetY) {
+      // Always draw path tiles, even under buildings
+      this.add.image(
+        currentX * TILE_SIZE + TILE_SIZE / 2,
+        currentY * TILE_SIZE + TILE_SIZE / 2,
+        'path'
+      ).setDisplaySize(TILE_SIZE, TILE_SIZE);
+      currentY += currentY < targetY ? 1 : -1;
+    }
+
+    // Add final tile
+    this.add.image(
+      currentX * TILE_SIZE + TILE_SIZE / 2,
+      currentY * TILE_SIZE + TILE_SIZE / 2,
+      'path'
+    ).setDisplaySize(TILE_SIZE, TILE_SIZE);
   }
 
   update() {
@@ -368,6 +362,22 @@ export class MainScene extends Phaser.Scene {
       if (!this.input.keyboard!.enabled) {
         this.input.keyboard!.enabled = true;
       }
+    }
+
+    // Check if player is still overlapping with any hotspot
+    let isInAnyHotspot = false;
+    this.hotspots.forEach(hotspot => {
+      const dx = this.player.x - hotspot.x;
+      const dy = this.player.y - hotspot.y;
+
+      if (Math.abs(dx) < hotspot.width / 2 && Math.abs(dy) < hotspot.height / 2) {
+        isInAnyHotspot = true;
+      }
+    });
+
+    // If player is not in any hotspot, clear the button
+    if (!isInAnyHotspot) {
+      this.setCurrentHotspotName(null);
     }
 
     this.player.setVelocity(0);
