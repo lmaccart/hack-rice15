@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import OverlayWrapper from './OverlayWrapper';
 import QuizModal from '@/components/QuizModal';
+import SavingsCalculator from '@/components/minigames/SavingsCalculator';
 import { quizzes } from '@/lib/quizData';
 
 interface BankOverlayProps {
@@ -11,10 +12,15 @@ interface BankOverlayProps {
 
 export default function BankOverlay({ onClose }: BankOverlayProps) {
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showMiniGame, setShowMiniGame] = useState(false);
   const quiz = quizzes.bank;
 
   if (showQuiz) {
     return <QuizModal quiz={quiz} buildingName="bank" onClose={() => setShowQuiz(false)} />;
+  }
+
+  if (showMiniGame) {
+    return <SavingsCalculator onClose={() => setShowMiniGame(false)} />;
   }
 
   return (
@@ -65,10 +71,18 @@ export default function BankOverlay({ onClose }: BankOverlayProps) {
           </div>
         </section>
 
+        {/* Mini-Game Button */}
+        <button
+          onClick={() => setShowMiniGame(true)}
+          className="w-full mt-4 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+        >
+          Try Savings Calculator
+        </button>
+
         {/* Quiz Button */}
         <button
           onClick={() => setShowQuiz(true)}
-          className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+          className="w-full mt-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
         >
           Test Your Knowledge
         </button>

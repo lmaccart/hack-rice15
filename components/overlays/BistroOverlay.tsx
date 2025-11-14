@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import OverlayWrapper from './OverlayWrapper';
 import QuizModal from '@/components/QuizModal';
+import BudgetChallenge from '@/components/minigames/BudgetChallenge';
 import { quizzes } from '@/lib/quizData';
 
 interface BistroOverlayProps {
@@ -11,10 +12,15 @@ interface BistroOverlayProps {
 
 export default function BistroOverlay({ onClose }: BistroOverlayProps) {
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showMiniGame, setShowMiniGame] = useState(false);
   const quiz = quizzes.bistro;
 
   if (showQuiz) {
     return <QuizModal quiz={quiz} buildingName="bistro" onClose={() => setShowQuiz(false)} />;
+  }
+
+  if (showMiniGame) {
+    return <BudgetChallenge onClose={() => setShowMiniGame(false)} />;
   }
 
   return (
@@ -99,10 +105,18 @@ export default function BistroOverlay({ onClose }: BistroOverlayProps) {
           </div>
         </section>
 
+        {/* Mini-Game Button */}
+        <button
+          onClick={() => setShowMiniGame(true)}
+          className="w-full mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+        >
+          Try 50/30/20 Budget Challenge
+        </button>
+
         {/* Quiz Button */}
         <button
           onClick={() => setShowQuiz(true)}
-          className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+          className="w-full mt-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
         >
           Test Your Knowledge
         </button>

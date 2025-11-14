@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import OverlayWrapper from './OverlayWrapper';
 import QuizModal from '@/components/QuizModal';
+import BudgetShopping from '@/components/minigames/BudgetShopping';
 import { quizzes } from '@/lib/quizData';
 
 interface ShopOverlayProps {
@@ -11,10 +12,15 @@ interface ShopOverlayProps {
 
 export default function ShopOverlay({ onClose }: ShopOverlayProps) {
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showMiniGame, setShowMiniGame] = useState(false);
   const quiz = quizzes.shop;
 
   if (showQuiz) {
     return <QuizModal quiz={quiz} buildingName="shop" onClose={() => setShowQuiz(false)} />;
+  }
+
+  if (showMiniGame) {
+    return <BudgetShopping onClose={() => setShowMiniGame(false)} />;
   }
 
   return (
@@ -81,10 +87,18 @@ export default function ShopOverlay({ onClose }: ShopOverlayProps) {
           </div>
         </section>
 
+        {/* Mini-Game Button */}
+        <button
+          onClick={() => setShowMiniGame(true)}
+          className="w-full mt-4 bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+        >
+          Play Budget Shopping Challenge
+        </button>
+
         {/* Quiz Button */}
         <button
           onClick={() => setShowQuiz(true)}
-          className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
+          className="w-full mt-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105"
         >
           Test Your Knowledge
         </button>
