@@ -8,6 +8,9 @@ import WizardChatbot from './WizardChatbot';
 import UserStatsHUD from './UserStatsHUD';
 import VirtualJoystick from './VirtualJoystick';
 import ParticleEffect from './ParticleEffect';
+import LoadingScreen from './LoadingScreen';
+import DayNightCycle from './DayNightCycle';
+import WeatherEffects from './WeatherEffects';
 import { useGameState } from '@/contexts/GameStateContext';
 
 // Import overlays (we'll create these next)
@@ -23,6 +26,7 @@ export default function Game() {
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>(null);
   const [currentHotspotName, setCurrentHotspotName] = useState<string | null>(null);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { markBuildingVisited, levelUpTrigger, achievementTrigger } = useGameState();
   const joystickDirectionRef = useRef({ x: 0, y: 0 });
 
@@ -58,6 +62,12 @@ export default function Game() {
         mainScene.setCurrentHotspotName = setCurrentHotspotName;
         mainScene.setIsChatbotOpen = setIsChatbotOpen;
         mainScene.getJoystickDirection = () => joystickDirectionRef.current;
+
+        // Wait for scene to fully load, then hide loading screen
+        mainScene.events.once('create', () => {
+          // Small delay to ensure smooth transition
+          setTimeout(() => setIsLoading(false), 500);
+        });
       }
     });
 
@@ -108,7 +118,16 @@ export default function Game() {
 
   return (
     <div className="relative w-full h-full">
+      {/* Loading Screen */}
+      <LoadingScreen isLoading={isLoading} />
+
       <div id="game-container" className="w-full h-full" />
+
+      {/* Day/Night Cycle */}
+      {!isLoading && <DayNightCycle cycleDuration={600000} showTimeIndicator={true} />}
+
+      {/* Weather Effects */}
+      {!isLoading && <WeatherEffects weatherDuration={300000} enableRandomWeather={true} />}
 
       {/* User Stats HUD */}
       <UserStatsHUD />
@@ -117,7 +136,7 @@ export default function Game() {
       {currentHotspotName && !activeOverlay && (
         <button
           onClick={handleInspectClick}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-colors text-lg"
+          className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 sm:px-6 sm:py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg shadow-lg transition-colors text-sm sm:text-lg min-h-[44px]"
         >
           Inspect {getHotspotDisplayName(currentHotspotName)}
         </button>
